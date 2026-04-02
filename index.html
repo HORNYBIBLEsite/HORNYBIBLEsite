@@ -1,271 +1,173 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HORNY BIBLE | ULTIMATE</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>HORNYBIBLE — Переводы Манхв</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,700&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --accent: #e8365d; --gold: #ffcc00; --bg: #0d0b12; --card: #1c1828;
-            --text: #ede8ff; --glass: rgba(255, 255, 255, 0.05);
-        }
+<style>
+/* ══ ПЕРЕМЕННЫЕ ЦВЕТОВ (HORNYBIBLE STYLE) ══ */
+:root {
+  --bg:       #0d0b12; /* Глубокий темный */
+  --bg2:      #13101c;
+  --surface:  #1c1828;
+  --border:   #2e2845;
+  --text:     #ede8ff;
+  --text2:    #8b7fb8;
+  --accent:   #e8365d; /* Розовый акцент */
+  --accent-glow: rgba(232, 54, 93, 0.3);
+  --gold:     #ffb800; /* Золото для админа */
+}
 
-        body {
-            background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif;
-            margin: 0; padding-bottom: 100px; overflow-x: hidden;
-        }
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'EB Garamond', serif;
+  line-height: 1.6;
+  margin: 0;
+}
 
-        /* ═══ UI ELEMENTS ═══ */
-        header {
-            padding: 20px; sticky; top: 0; z-index: 100; backdrop-filter: blur(15px);
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--glass);
-        }
+/* ══ ШАПКА В СТИЛЕ МАНХВА-ПЛАТФОРМЫ ══ */
+header {
+  padding: 40px 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(to bottom, #161221, var(--bg));
+}
 
-        .logo { font-family: 'Bebas Neue'; font-size: 2.8rem; color: var(--accent); text-shadow: 0 0 20px rgba(232,54,93,0.4); cursor: pointer; }
+.brand-h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 4rem;
+  color: var(--accent);
+  letter-spacing: 4px;
+  text-shadow: 0 0 20px var(--accent-glow);
+  margin: 0;
+}
 
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000; display: none;
-            align-items: center; justify-content: center; backdrop-filter: blur(10px);
-        }
+/* ══ СЕТКА РАБОТ (МАНХВЫ) ══ */
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-        .modal-content {
-            background: var(--card); padding: 30px; border-radius: 20px;
-            width: 90%; max-width: 400px; border: 1px solid var(--accent);
-        }
+.work-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: 0.3s;
+  cursor: pointer;
+  position: relative;
+}
 
-        input, textarea {
-            width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px;
-            background: rgba(0,0,0,0.3); border: 1px solid #3d3660; color: #fff; box-sizing: border-box;
-        }
+.work-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
 
-        .btn {
-            width: 100%; padding: 15px; border-radius: 10px; border: none;
-            font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
-        .btn-primary { background: var(--accent); color: white; }
-        .btn-outline { background: transparent; border: 1px solid var(--accent); color: white; margin-top: 10px; }
+.work-info { padding: 20px; }
+.work-title { 
+  font-family: 'Playfair Display', serif; 
+  font-size: 1.4rem; 
+  color: var(--accent);
+  margin-bottom: 8px;
+}
 
-        /* ═══ CONTENT GRID ═══ */
-        .m-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-            gap: 20px; padding: 20px;
-        }
+/* ══ СИСТЕМА КОММЕНТАРИЕВ ══ */
+.comment {
+  background: var(--bg2);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 3px solid var(--border);
+}
 
-        .m-card {
-            background: var(--card); border-radius: 15px; overflow: hidden;
-            border: 1px solid var(--glass); transition: 0.4s;
-        }
-        .m-card:hover { transform: translateY(-10px); border-color: var(--accent); }
-        .m-card img { width: 100%; height: 260px; object-fit: cover; }
-        .m-card h3 { font-family: 'Bebas Neue'; padding: 10px; margin: 0; color: var(--gold); }
+.comment-admin {
+  border-left-color: var(--gold);
+  background: rgba(255, 184, 0, 0.05);
+}
 
-        /* ═══ READER ═══ */
-        #reader-view {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 2000; display: none;
-        }
+.admin-badge {
+  color: var(--gold);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  border: 1px solid var(--gold);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 10px;
+}
 
-        /* ═══ ADMIN PANEL ═══ */
-        #admin-panel {
-            position: fixed; bottom: 20px; left: 20px; right: 20px;
-            background: #252135; padding: 20px; border-radius: 20px;
-            display: none; border: 1px solid var(--gold); z-index: 500;
-        }
+/* Кнопки в стиле проекта */
+.btn-action {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: 0.2s;
+}
 
-        .hidden { display: none !important; }
-    </style>
+.btn-action:hover {
+  filter: brightness(1.2);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+</style>
 </head>
 <body>
 
 <header>
-    <div class="logo" onclick="goHome()">HB</div>
-    <div id="auth-buttons">
-        <button class="btn-outline" style="padding: 5px 15px;" onclick="openModal('auth-modal')">ВХОД</button>
-    </div>
-    <button id="back-btn" class="hidden btn-outline" style="width: auto;" onclick="goBack()">НАЗАД</button>
+  <h1 class="brand-h1">HORNYBIBLE</h1>
+  <p style="color: var(--text2); letter-spacing: 2px;">ЛЮБИТЕЛЬСКИЕ ПЕРЕВОДЫ МАНХВ</p>
 </header>
 
-<div id="main-view" class="m-grid"></div>
+<nav style="display: flex; justify-content: center; gap: 30px; padding: 15px; border-bottom: 1px solid var(--border);">
+  <a href="#" onclick="showPage('home')" style="color: var(--text); text-decoration: none;">ГЛАВНАЯ</a>
+  <a href="#" onclick="showPage('catalog')" style="color: var(--text); text-decoration: none;">КАТАЛОГ</a>
+  <a href="#" onclick="showPage('profile')" id="nav-profile" style="color: var(--accent); text-decoration: none;">ПРОФИЛЬ</a>
+</nav>
 
-<div id="chapters-view" class="container hidden" style="padding: 20px;">
-    <h1 id="manhwa-title" style="font-family: 'Bebas Neue'; color: var(--accent);"></h1>
-    <div id="chapters-list"></div>
-</div>
-
-<div id="auth-modal" class="modal">
-    <div class="modal-content">
-        <h2 id="auth-title">Вход в систему</h2>
-        <input type="email" id="auth-email" placeholder="Электронная почта">
-        <input type="password" id="auth-pass" placeholder="Пароль">
-        <button class="btn btn-primary" id="main-auth-btn" onclick="handleAuth()">ВОЙТИ</button>
-        <button class="btn-outline" onclick="toggleAuthMode()">Нет аккаунта? Регистрация</button>
-        <button class="btn-outline" style="border:none; color: var(--text2);" onclick="resetPassword()">Забыли пароль?</button>
-        <button class="btn-outline" onclick="closeModal('auth-modal')">Закрыть</button>
+<div id="page-home" class="page active">
+  <div class="works-grid" id="works-list">
     </div>
 </div>
 
-<div id="admin-panel">
-    <div id="m-form">
-        <strong>Добавить Манхву:</strong><br><br>
-        <input type="text" id="m-title" placeholder="Название">
-        <input type="text" id="m-cover" placeholder="URL Обложки">
-        <textarea id="m-desc" placeholder="Описание"></textarea>
-        <button class="btn btn-primary" onclick="adminAddManhwa()">ОПУБЛИКОВАТЬ</button>
+<div id="reader-modal" style="display:none; position:fixed; inset:0; background:var(--bg); z-index:1000; overflow-y:auto; padding:20px;">
+  <button onclick="closeReader()" class="btn-action" style="position:fixed; top:20px; right:20px;">ЗАКРЫТЬ</button>
+  <div id="chapter-content" style="max-width:800px; margin: 60px auto;">
     </div>
-    <div id="ch-form" class="hidden">
-        <strong>Добавить главу в <span id="target-m"></span>:</strong><br><br>
-        <input type="text" id="ch-name" placeholder="Название главы">
-        <input type="text" id="ch-url" placeholder="Ссылка на PDF">
-        <button class="btn btn-primary" style="background: #28a745;" onclick="adminAddChapter()">СОХРАНИТЬ ГЛАВУ</button>
-    </div>
-</div>
-
-<div id="reader-view">
-    <button class="btn-primary" style="margin: 10px; width: auto;" onclick="closeReader()">ЗАКРЫТЬ ЧИТАЛКУ</button>
-    <iframe id="pdf-frame" src="" style="width:100%; height:90%; border:none;"></iframe>
 </div>
 
 <script>
-// --- КОНФИГУРАЦИЯ (ВСТАВЬ СВОЕ) ---
-const firebaseConfig = {
-    apiKey: "ТВОЙ_КЛЮЧ",
-    authDomain: "твой.firebaseapp.com",
-    projectId: "твой",
-    storageBucket: "твой.appspot.com",
-    messagingSenderId: "ID",
-    appId: "ID"
+// ТВОЙ АЙДИ АДМИНА ИЗ ПРЕДЫДУЩИХ ФАЙЛОВ
+const ADMIN_UID = "REPLACE_WITH_YOUR_ADMIN_UID"; 
+
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+}
+
+// Пример функции загрузки (логика из index (32).html)
+function loadWorks() {
+  // Тут должен быть твой вызов db.collection('works').get()...
+  console.log("Загрузка манхв для HornyBible...");
+}
+
+// Инициализация
+window.onload = () => {
+  loadWorks();
 };
-
-const MASTER_UID = "R24gjU6..."; // Твой UID
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
-
-let activeId = null;
-let isLoginMode = true;
-
-// ═══ AUTH LOGIC ═══
-async function handleAuth() {
-    const email = document.getElementById('auth-email').value;
-    const pass = document.getElementById('auth-pass').value;
-    try {
-        if(isLoginMode) await auth.signInWithEmailAndPassword(email, pass);
-        else await auth.createUserWithEmailAndPassword(email, pass);
-        closeModal('auth-modal');
-    } catch (e) { alert(e.message); }
-}
-
-async function resetPassword() {
-    const email = document.getElementById('auth-email').value;
-    if(!email) return alert("Введите почту в поле выше!");
-    try {
-        await auth.sendPasswordResetEmail(email);
-        alert("Ссылка для сброса пароля отправлена на почту!");
-    } catch (e) { alert(e.message); }
-}
-
-auth.onAuthStateChanged(user => {
-    if(user && user.uid === MASTER_UID) {
-        document.getElementById('admin-panel').style.display = 'block';
-        document.getElementById('auth-buttons').innerText = "АДМИН";
-    } else if(user) {
-        document.getElementById('auth-buttons').innerText = user.email.split('@')[0];
-    }
-});
-
-// ═══ CONTENT LOGIC ═══
-function loadMain() {
-    db.collection("manhwa").orderBy("createdAt", "desc").onSnapshot(snap => {
-        const grid = document.getElementById('main-view');
-        grid.innerHTML = '';
-        snap.forEach(doc => {
-            const data = doc.data();
-            grid.innerHTML += `
-                <div class="m-card" onclick="openManhwa('${doc.id}', '${data.title}')">
-                    <img src="${data.cover}">
-                    <h3>${data.title}</h3>
-                </div>
-            `;
-        });
-    });
-}
-
-function openManhwa(id, title) {
-    activeId = id;
-    document.getElementById('main-view').classList.add('hidden');
-    document.getElementById('chapters-view').classList.remove('hidden');
-    document.getElementById('back-btn').classList.remove('hidden');
-    document.getElementById('manhwa-title').innerText = title;
-    
-    // Админка переключается на главы
-    document.getElementById('m-form').classList.add('hidden');
-    document.getElementById('ch-form').classList.remove('hidden');
-    document.getElementById('target-m').innerText = title;
-
-    db.collection("manhwa").doc(id).collection("chapters").orderBy("createdAt", "asc").onSnapshot(snap => {
-        const list = document.getElementById('chapters-list');
-        list.innerHTML = '';
-        snap.forEach(doc => {
-            const ch = doc.data();
-            list.innerHTML += `<div class="btn-outline" style="padding:15px; margin-bottom:10px; cursor:pointer;" onclick="openReader('${ch.url}')">${ch.name}</div>`;
-        });
-    });
-}
-
-function goHome() {
-    document.getElementById('main-view').classList.remove('hidden');
-    document.getElementById('chapters-view').classList.add('hidden');
-    document.getElementById('back-btn').classList.add('hidden');
-    document.getElementById('m-form').classList.remove('hidden');
-    document.getElementById('ch-form').classList.add('hidden');
-}
-
-function openReader(url) {
-    document.getElementById('pdf-frame').src = url;
-    document.getElementById('reader-view').style.display = 'block';
-}
-
-function closeReader() {
-    document.getElementById('reader-view').style.display = 'none';
-    document.getElementById('pdf-frame').src = '';
-}
-
-// ═══ ADMIN ACTIONS ═══
-async function adminAddManhwa() {
-    const title = document.getElementById('m-title').value;
-    const cover = document.getElementById('m-cover').value;
-    const desc = document.getElementById('m-desc').value;
-    await db.collection("manhwa").add({ title, cover, desc, createdAt: new Date() });
-    alert("Добавлено!");
-}
-
-async function adminAddChapter() {
-    const name = document.getElementById('ch-name').value;
-    const url = document.getElementById('ch-url').value;
-    await db.collection("manhwa").doc(activeId).collection("chapters").add({ name, url, createdAt: new Date() });
-    alert("Глава добавлена!");
-}
-
-// ═══ HELPERS ═══
-function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-function toggleAuthMode() {
-    isLoginMode = !isLoginMode;
-    document.getElementById('auth-title').innerText = isLoginMode ? "Вход в систему" : "Регистрация";
-    document.getElementById('main-auth-btn').innerText = isLoginMode ? "ВОЙТИ" : "СОЗДАТЬ АККАУНТ";
-}
-
-loadMain();
 </script>
+
 </body>
 </html>
