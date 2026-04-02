@@ -1,0 +1,2077 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0d0b12">
+<title>HORNYBIBLE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══ VARIABLES ═══ */
+:root {
+  --bg:       #0d0b12;
+  --bg2:      #13101c;
+  --bg3:      #1c1828;
+  --surface:  #221e31;
+  --border:   #2e2845;
+  --border2:  #3d3660;
+  --text:     #ede8ff;
+  --text2:    #8b7fb8;
+  --text3:    #4a4268;
+  --accent:   #e8365d;
+  --accent2:  #ff6b35;
+  --gold:     #f5c842;
+  --cyan:     #00d4ff;
+  --purple:   #9b59b6;
+  --green:    #27ae60;
+  --r:        12px;
+  --font-d:   'Bebas Neue', sans-serif;
+  --font-b:   'DM Sans', sans-serif;
+  --font-r:   'Cormorant Garamond', serif;
+  --nav-h:    58px;
+  --shadow:   0 8px 32px rgba(0,0,0,0.45);
+}
+[data-theme="light"] {
+  --bg:       #f4f2ff;
+  --bg2:      #edeaff;
+  --bg3:      #e3dfff;
+  --surface:  #ffffff;
+  --border:   #d0c8f0;
+  --border2:  #b8aee0;
+  --text:     #18122e;
+  --text2:    #5d5285;
+  --text3:    #9b91c0;
+  --shadow:   0 8px 32px rgba(100,80,160,0.12);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--font-b);min-height:100vh;
+  overflow-x:hidden;transition:background .3s,color .3s;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+/* ═══ NOISE OVERLAY ═══ */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity:.6;
+}
+
+/* ═══ PAGES ═══ */
+.page{display:none;min-height:100vh;padding-top:var(--nav-h);position:relative;z-index:1}
+.page.active{display:block}
+
+/* ═══ NAVBAR ═══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:var(--nav-h);
+  background:rgba(13,11,18,0.94);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;padding:0 14px;
+}
+[data-theme="light"] nav{background:rgba(244,242,255,0.95)}
+
+.nav-logo{
+  display:flex;align-items:center;gap:9px;cursor:pointer;
+  text-decoration:none;flex-shrink:0;
+}
+.nav-avatar{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:#fff;font-family:var(--font-d);letter-spacing:1px;
+  overflow:hidden;flex-shrink:0;
+  box-shadow:0 0 14px rgba(232,54,93,0.4);
+}
+.nav-avatar img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.nav-title{
+  font-family:var(--font-d);font-size:1.25rem;
+  letter-spacing:2px;color:var(--text);line-height:1;
+}
+.nav-title span{color:var(--accent)}
+.nav-spacer{flex:1}
+.nav-pill{
+  display:flex;align-items:center;gap:6px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:50px;padding:4px 6px;
+}
+.nav-search{
+  width:0;opacity:0;background:none;border:none;
+  color:var(--text);font-family:var(--font-b);font-size:.82rem;outline:none;
+  transition:width .3s,opacity .3s;
+}
+.nav-search.open{width:180px;opacity:1}
+.nav-search::placeholder{color:var(--text3)}
+
+.icon-btn{
+  background:none;border:none;color:var(--text2);cursor:pointer;
+  font-size:1.1rem;padding:6px;border-radius:8px;
+  transition:color .2s,background .2s;flex-shrink:0;line-height:1;
+}
+.icon-btn:hover{color:var(--text);background:var(--bg3)}
+.nav-btn{
+  background:none;border:1px solid var(--border);color:var(--text2);
+  border-radius:8px;padding:6px 13px;cursor:pointer;
+  font-family:var(--font-b);font-size:.75rem;font-weight:600;
+  transition:all .2s;white-space:nowrap;flex-shrink:0;
+}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.nav-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.nav-btn.primary:hover{background:#c92049}
+#admin-badge{
+  font-family:var(--font-d);font-size:.68rem;letter-spacing:1px;
+  background:linear-gradient(135deg,var(--gold),var(--accent2));
+  color:#111;padding:3px 10px;border-radius:50px;
+  display:none;flex-shrink:0;cursor:default;
+}
+.nav-tabs{
+  display:flex;gap:2px;
+}
+.nav-tab{
+  background:none;border:none;color:var(--text3);cursor:pointer;
+  font-family:var(--font-b);font-size:.75rem;font-weight:600;
+  padding:6px 10px;border-radius:6px;transition:all .2s;
+  white-space:nowrap;
+}
+.nav-tab:hover{color:var(--text2);background:var(--bg3)}
+.nav-tab.active{color:var(--accent);background:rgba(232,54,93,.1)}
+
+/* ═══ TOAST ═══ */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(90px);
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:50px;padding:10px 22px;font-size:.84rem;font-weight:600;
+  z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;white-space:nowrap;box-shadow:var(--shadow);
+  color:var(--text);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(0,212,255,.5);color:var(--cyan)}
+.toast.error{border-color:rgba(232,54,93,.5);color:var(--accent)}
+.toast.info{border-color:rgba(155,89,182,.5);color:var(--purple)}
+
+/* ═══ HERO ═══ */
+.hero{
+  position:relative;overflow:hidden;
+  padding:64px 20px 56px;text-align:center;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -5%,rgba(232,54,93,0.18) 0%,transparent 65%),
+    radial-gradient(ellipse 60% 50% at 85% 110%,rgba(0,212,255,0.09) 0%,transparent 65%),
+    radial-gradient(ellipse 40% 40% at 15% 80%,rgba(155,89,182,0.07) 0%,transparent 60%);
+}
+[data-theme="light"] .hero-bg{
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -5%,rgba(232,54,93,0.1) 0%,transparent 65%),
+    radial-gradient(ellipse 60% 50% at 85% 110%,rgba(0,212,255,0.07) 0%,transparent 65%);
+}
+.hero-grid{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-size:44px 44px;
+  background-image:linear-gradient(to right,rgba(255,255,255,0.025) 1px,transparent 1px),
+                   linear-gradient(to bottom,rgba(255,255,255,0.025) 1px,transparent 1px);
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 0%,transparent 70%);
+}
+[data-theme="light"] .hero-grid{
+  background-image:linear-gradient(to right,rgba(0,0,0,0.04) 1px,transparent 1px),
+                   linear-gradient(to bottom,rgba(0,0,0,0.04) 1px,transparent 1px);
+}
+.hero-content{position:relative;z-index:1}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-d);font-size:.78rem;letter-spacing:3px;
+  color:var(--accent);margin-bottom:16px;
+  border:1px solid rgba(232,54,93,.3);padding:5px 18px;border-radius:50px;
+  background:rgba(232,54,93,.07);
+}
+.hero h1{
+  font-family:var(--font-d);
+  font-size:clamp(3.4rem,14vw,8rem);
+  letter-spacing:4px;line-height:.95;
+  color:var(--text);
+  animation:slideUp .5s ease both;
+  position:relative;display:inline-block;
+}
+.hero h1 .h-accent{
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  color:var(--text2);font-size:.92rem;margin-top:14px;
+  animation:slideUp .5s .1s ease both;letter-spacing:.5px;
+}
+.hero-cta{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  flex-wrap:wrap;margin-top:22px;animation:slideUp .5s .2s ease both;
+}
+.hero-search-bar{
+  display:flex;align-items:center;gap:0;
+  max-width:460px;width:100%;margin:22px auto 0;
+  animation:slideUp .5s .3s ease both;
+  background:var(--bg3);border:1px solid var(--border);border-radius:50px;
+  overflow:hidden;
+}
+.hero-search-bar input{
+  flex:1;background:none;border:none;outline:none;
+  padding:13px 20px;color:var(--text);font-family:var(--font-b);font-size:.9rem;
+}
+.hero-search-bar input::placeholder{color:var(--text3)}
+.hero-search-btn{
+  background:var(--accent);border:none;color:#fff;
+  padding:10px 20px;cursor:pointer;font-size:1rem;
+  border-radius:50px;margin:4px;transition:background .2s;
+}
+.hero-search-btn:hover{background:#c92049}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* ═══ LINK BUTTON ═══ */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 22px;border-radius:50px;border:none;cursor:pointer;
+  font-family:var(--font-b);font-weight:600;font-size:.82rem;
+  transition:all .2s;text-decoration:none;
+}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 18px rgba(232,54,93,.35)}
+.btn-primary:hover{background:#c92049;transform:translateY(-1px)}
+.btn-ghost{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-tg{
+  background:rgba(0,212,255,.1);color:var(--cyan);
+  border:1px solid rgba(0,212,255,.3);
+}
+.btn-tg:hover{background:rgba(0,212,255,.2)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--accent2));color:#111;font-weight:700}
+
+/* ═══ CATALOG ═══ */
+.catalog-section{
+  padding:24px 16px 80px;max-width:1320px;margin:0 auto;
+}
+.section-header{
+  display:flex;align-items:center;gap:14px;margin-bottom:22px;
+}
+.section-label{
+  font-family:var(--font-d);font-size:.8rem;letter-spacing:3px;
+  color:var(--accent);text-transform:uppercase;white-space:nowrap;
+}
+.section-line{flex:1;height:1px;background:var(--border)}
+.filter-bar{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;
+}
+.filter-chip{
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text3);border-radius:50px;padding:5px 14px;
+  font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s;
+  font-family:var(--font-b);
+}
+.filter-chip:hover,.filter-chip.active{
+  border-color:var(--accent);color:var(--accent);background:rgba(232,54,93,.08);
+}
+
+#catalog-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(158px,1fr));
+  gap:14px;
+}
+@media(min-width:600px){#catalog-grid{grid-template-columns:repeat(auto-fill,minmax(185px,1fr))}}
+@media(min-width:1000px){#catalog-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}}
+
+/* ── CARDS ── */
+.manhwa-card{
+  cursor:pointer;border-radius:var(--r);
+  background:var(--bg2);border:1px solid var(--border);
+  overflow:hidden;transition:transform .25s,box-shadow .25s,border-color .25s;
+  animation:fadeIn .4s ease both;position:relative;
+  group:card;
+}
+.manhwa-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 20px 50px rgba(232,54,93,.18),0 8px 16px rgba(0,0,0,.3);
+  border-color:var(--border2);
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.card-cover{
+  height:255px;background-size:cover;background-position:center top;
+  position:relative;overflow:hidden;
+}
+.cover-placeholder{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--bg3),var(--surface));
+  font-family:var(--font-d);font-size:5rem;color:var(--border2);
+}
+.card-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(13,11,18,.92) 0%,rgba(13,11,18,.2) 50%,transparent 100%);
+  transition:opacity .25s;
+}
+[data-theme="light"] .card-overlay{
+  background:linear-gradient(to top,rgba(244,242,255,.92) 0%,rgba(244,242,255,.1) 40%,transparent 100%);
+}
+.card-body{padding:12px}
+.card-title{
+  font-weight:700;font-size:.88rem;line-height:1.35;margin-bottom:4px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card-author{font-size:.7rem;color:var(--text2);margin-bottom:8px}
+.card-tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{
+  font-size:.6rem;font-weight:700;letter-spacing:.4px;
+  background:rgba(0,212,255,.08);color:var(--cyan);
+  border:1px solid rgba(0,212,255,.2);
+  padding:2px 8px;border-radius:50px;
+}
+.tag-red{background:rgba(232,54,93,.08);color:var(--accent);border-color:rgba(232,54,93,.2)}
+.tag-gold{background:rgba(245,200,66,.08);color:var(--gold);border-color:rgba(245,200,66,.2)}
+.progress-badge{
+  margin-top:8px;font-size:.68rem;color:var(--cyan);font-weight:700;letter-spacing:.2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.new-badge{
+  position:absolute;top:10px;left:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+  font-family:var(--font-d);font-size:.72rem;letter-spacing:1.5px;
+  padding:3px 11px;border-radius:5px;z-index:2;
+}
+.card-admin-overlay{
+  position:absolute;inset:0;background:rgba(232,54,93,.07);
+  display:none;z-index:3;pointer-events:none;
+}
+.admin-mode .manhwa-card:hover .card-admin-overlay{display:block}
+.card-admin-btn{
+  position:absolute;z-index:4;background:rgba(0,0,0,.75);color:#fff;
+  border:1px solid var(--border2);border-radius:7px;
+  font-size:.7rem;font-family:var(--font-b);font-weight:700;
+  padding:4px 10px;cursor:pointer;transition:all .2s;
+  display:none;
+}
+.card-admin-btn:hover{border-color:var(--accent);color:var(--accent)}
+.admin-mode .card-admin-btn{display:block}
+.card-edit-btn{top:8px;right:44px}
+.card-del-btn{top:8px;right:8px}
+
+/* ═══ BLOG PAGE ═══ */
+.blog-section{padding:28px 16px 80px;max-width:900px;margin:0 auto}
+.blog-grid{display:flex;flex-direction:column;gap:16px;margin-top:4px}
+.blog-post{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
+  padding:22px 24px;cursor:pointer;transition:all .2s;position:relative;
+}
+.blog-post:hover{border-color:var(--border2);background:var(--bg3)}
+.blog-post-tag{
+  display:inline-block;font-family:var(--font-d);font-size:.72rem;letter-spacing:2px;
+  color:var(--accent);border:1px solid rgba(232,54,93,.3);
+  padding:3px 12px;border-radius:50px;background:rgba(232,54,93,.07);margin-bottom:10px;
+}
+.blog-post-title{
+  font-family:var(--font-d);font-size:1.45rem;letter-spacing:1.5px;
+  color:var(--text);margin-bottom:8px;line-height:1.2;
+}
+.blog-post-body{
+  font-family:var(--font-r);font-size:1rem;line-height:1.75;
+  color:var(--text2);font-style:italic;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.blog-post-meta{
+  margin-top:12px;font-size:.72rem;color:var(--text3);
+  display:flex;align-items:center;gap:10px;
+}
+.blog-post-full{display:none}
+.blog-post-full .blog-post-body{display:block;-webkit-line-clamp:unset;overflow:visible}
+.blog-post-actions{
+  position:absolute;top:16px;right:16px;
+  display:none;gap:6px;
+}
+.admin-mode .blog-post-actions{display:flex}
+.btn-tiny{
+  background:var(--bg3);border:1px solid var(--border);color:var(--text2);
+  border-radius:6px;padding:4px 9px;font-size:.7rem;cursor:pointer;
+  font-family:var(--font-b);font-weight:600;transition:all .2s;
+}
+.btn-tiny:hover{border-color:var(--accent);color:var(--accent)}
+.btn-tiny.danger:hover{border-color:var(--accent);background:rgba(232,54,93,.1)}
+
+/* ═══ DETAIL PAGE ═══ */
+.detail-hero{
+  position:relative;height:340px;
+  background-size:cover;background-position:center top;
+  display:flex;align-items:flex-end;overflow:hidden;
+}
+@media(min-width:600px){.detail-hero{height:440px}}
+.detail-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,var(--bg) 0%,rgba(13,11,18,.55) 60%,transparent 100%);
+}
+[data-theme="light"] .detail-overlay{
+  background:linear-gradient(to top,var(--bg) 0%,rgba(244,242,255,.4) 60%,transparent 100%);
+}
+.detail-hero-content{
+  position:relative;z-index:1;padding:24px 20px;width:100%;max-width:960px;
+}
+.detail-hero-content h2{
+  font-family:var(--font-d);font-size:clamp(1.8rem,5vw,3rem);
+  letter-spacing:2px;line-height:1.05;margin-bottom:6px;
+}
+.detail-author-line{color:var(--text2);font-size:.82rem;margin-bottom:10px}
+.detail-body{max-width:960px;margin:0 auto;padding:20px 20px 80px}
+.detail-desc{
+  color:var(--text2);line-height:1.9;font-size:.9rem;
+  margin-bottom:24px;font-family:var(--font-r);font-style:italic;
+  border-left:3px solid var(--border2);padding-left:16px;
+}
+.detail-actions{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap}
+.chapters-header{
+  font-family:var(--font-d);font-size:.75rem;letter-spacing:3px;
+  color:var(--accent);text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:12px;
+}
+.chapters-header::after{content:'';flex:1;height:1px;background:var(--border)}
+.chapter-row{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 16px;border-radius:10px;
+  background:var(--bg2);border:1px solid var(--border);
+  margin-bottom:6px;cursor:pointer;transition:all .2s;
+  position:relative;
+}
+.chapter-row:hover{border-color:var(--border2);background:var(--bg3)}
+.ch-num{font-size:.68rem;font-weight:700;color:var(--accent);font-family:var(--font-d);letter-spacing:1px;min-width:52px}
+.ch-name{flex:1;font-size:.87rem}
+.ch-date{font-size:.68rem;color:var(--text3)}
+.ch-arrow{color:var(--text3);transition:transform .2s,color .2s;font-size:.9rem}
+.chapter-row:hover .ch-arrow{transform:translateX(4px);color:var(--accent)}
+.ch-admin-btns{display:none;gap:5px}
+.admin-mode .ch-admin-btns{display:flex}
+
+/* ═══ READER PAGE ═══ */
+.reader-topbar{
+  position:sticky;top:var(--nav-h);z-index:100;
+  background:rgba(13,11,18,.96);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:10px 16px;display:flex;align-items:center;gap:10px;
+}
+[data-theme="light"] .reader-topbar{background:rgba(244,242,255,.96)}
+.reader-topbar h3{
+  flex:1;font-family:var(--font-d);font-size:.95rem;
+  letter-spacing:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.view-toggle{
+  display:flex;gap:3px;background:var(--bg3);padding:3px;border-radius:8px;
+}
+.view-btn{
+  background:none;border:none;color:var(--text2);cursor:pointer;
+  font-size:.78rem;padding:5px 10px;border-radius:6px;font-family:var(--font-b);
+  font-weight:600;transition:all .2s;white-space:nowrap;
+}
+.view-btn.active{background:var(--accent);color:#fff}
+
+#reader-scroll-wrap{max-width:880px;margin:0 auto;padding:16px 0 60px;display:none}
+#reader-scroll-wrap.active{display:block}
+#reader-pager-wrap{max-width:100%;margin:0 auto;padding:0 0 60px;display:none;position:relative}
+#reader-pager-wrap.active{display:block}
+.pager-canvas-wrap{
+  display:flex;align-items:center;justify-content:center;
+  min-height:calc(100vh - 200px);padding:10px;
+}
+.pager-canvas-wrap canvas{
+  max-width:100%;max-height:calc(100vh - 200px);
+  object-fit:contain;border-radius:6px;touch-action:pan-y;
+  box-shadow:0 12px 50px rgba(0,0,0,.6);
+}
+.pager-nav{
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  padding:12px;position:sticky;bottom:0;
+  background:rgba(13,11,18,.92);backdrop-filter:blur(8px);
+  border-top:1px solid var(--border);
+}
+[data-theme="light"] .pager-nav{background:rgba(244,242,255,.92)}
+.pager-btn{
+  background:var(--bg3);border:1px solid var(--border);color:var(--text);
+  border-radius:8px;padding:9px 20px;cursor:pointer;
+  font-family:var(--font-b);font-size:.82rem;font-weight:700;transition:all .2s;
+}
+.pager-btn:hover{border-color:var(--accent);color:var(--accent)}
+.pager-btn:disabled{opacity:.3;cursor:default}
+.pager-info{font-family:var(--font-d);font-size:1.05rem;letter-spacing:1px;color:var(--text2);min-width:80px;text-align:center}
+.text-reader{
+  max-width:700px;margin:0 auto;padding:32px 20px 80px;
+  font-family:var(--font-r);font-size:1.08rem;line-height:2;color:var(--text);
+}
+.text-reader p{margin-bottom:1.25em;text-indent:1.5em}
+.pdf-loading{text-align:center;padding:60px 20px;color:var(--text2)}
+.pdf-spinner{
+  width:36px;height:36px;border:3px solid var(--border);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin .8s linear infinite;margin:0 auto 14px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ═══ COMMENTS ═══ */
+.comments-section{max-width:700px;margin:0 auto;padding:0 20px 80px}
+.comments-title{
+  font-family:var(--font-d);font-size:.75rem;letter-spacing:3px;
+  color:var(--cyan);text-transform:uppercase;
+  margin-bottom:20px;padding-top:24px;border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.comments-title::after{content:'';flex:1;height:1px;background:var(--border)}
+#comments-list{
+  display:flex;flex-direction:column;gap:8px;
+  max-height:400px;overflow-y:auto;margin-bottom:20px;padding-right:4px;
+}
+.comment{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:11px 13px 10px;position:relative;
+  transition:border-color .2s;
+}
+.comment:hover{border-color:var(--border2)}
+.comment.comment-mine{border-color:rgba(0,212,255,.25)}
+.comment.comment-admin{border-color:rgba(245,200,66,.3);background:rgba(245,200,66,.04)}
+.comment-header{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.comment-name{font-size:.7rem;font-weight:700;color:var(--cyan)}
+.comment-name.admin-name{color:var(--gold)}
+.admin-crown{font-size:.65rem;color:var(--gold);margin-left:2px}
+.comment-date{font-size:.63rem;color:var(--text3);margin-left:auto}
+.comment-reply-preview{
+  background:var(--bg3);border-left:3px solid var(--border2);
+  border-radius:4px;padding:5px 10px;margin-bottom:6px;font-size:.76rem;color:var(--text2);
+}
+.comment-reply-name{font-weight:700;color:var(--text2);font-size:.7rem;margin-bottom:2px}
+.comment-text{font-size:.87rem;line-height:1.6;white-space:pre-wrap}
+.comment-actions{
+  display:flex;gap:6px;margin-top:7px;
+}
+.comment-action-btn{
+  background:none;border:1px solid var(--border);color:var(--text3);
+  border-radius:5px;padding:3px 8px;font-size:.68rem;cursor:pointer;
+  font-family:var(--font-b);font-weight:600;transition:all .2s;
+}
+.comment-action-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.comment-action-btn.del:hover{border-color:var(--accent);color:var(--accent)}
+
+.reply-indicator{
+  display:none;background:var(--bg3);border:1px solid var(--border2);
+  border-radius:8px;padding:8px 12px;margin-bottom:10px;
+  font-size:.78rem;color:var(--text2);
+  align-items:center;gap:8px;
+}
+.reply-indicator.visible{display:flex}
+.reply-cancel{
+  background:none;border:none;color:var(--text3);cursor:pointer;
+  font-size:.85rem;margin-left:auto;
+}
+.comment-form{display:flex;flex-direction:column;gap:9px}
+.comment-form input,.comment-form textarea{
+  background:var(--bg3);border:1px solid var(--border);border-radius:9px;
+  padding:9px 13px;color:var(--text);font-family:var(--font-b);font-size:.87rem;
+  outline:none;resize:vertical;transition:border-color .2s;
+}
+.comment-form input:focus,.comment-form textarea:focus{border-color:var(--cyan)}
+.comment-form input::placeholder,.comment-form textarea::placeholder{color:var(--text3)}
+.comment-form textarea{min-height:75px}
+.form-row{display:flex;gap:9px}
+.form-row input{flex:1}
+
+/* ═══ MODALS ═══ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:999;
+  background:rgba(0,0,0,.82);backdrop-filter:blur(12px);
+  align-items:center;justify-content:center;padding:16px;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;padding:28px;max-width:540px;width:100%;
+  max-height:90vh;overflow-y:auto;
+  animation:modalIn .25s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+.modal-head{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;
+}
+.modal-head h3{font-family:var(--font-d);font-size:1.1rem;letter-spacing:2px;color:var(--accent)}
+.modal-close{
+  background:none;border:none;color:var(--text2);cursor:pointer;
+  font-size:1.3rem;padding:4px;line-height:1;border-radius:6px;transition:all .2s;
+}
+.modal-close:hover{color:var(--text);background:var(--bg3)}
+.modal label{display:block;font-size:.7rem;color:var(--text2);margin-bottom:5px;font-weight:700;letter-spacing:.5px}
+.modal input,.modal textarea,.modal select{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:9px;padding:9px 13px;color:var(--text);
+  font-family:var(--font-b);font-size:.87rem;outline:none;
+  margin-bottom:14px;resize:vertical;transition:border-color .2s;
+}
+.modal input:focus,.modal textarea:focus,.modal select:focus{border-color:var(--accent)}
+.modal textarea{min-height:110px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+.modal-note{
+  font-size:.76rem;color:var(--text3);line-height:1.6;
+  background:var(--bg3);border-radius:8px;padding:10px 13px;margin-bottom:14px;
+}
+.modal-note code{
+  color:var(--cyan);background:rgba(0,212,255,.08);
+  padding:1px 5px;border-radius:3px;font-size:.72rem;
+}
+.url-input-wrap{position:relative}
+.url-preview{
+  width:80px;height:56px;object-fit:cover;border-radius:7px;
+  border:1px solid var(--border);position:absolute;right:10px;top:5px;
+  display:none;
+}
+
+/* ═══ AUTH MODAL ═══ */
+.auth-tabs{display:flex;gap:0;margin-bottom:22px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.auth-tab{
+  flex:1;background:none;border:none;color:var(--text2);
+  padding:10px;cursor:pointer;font-family:var(--font-b);font-weight:700;font-size:.82rem;
+  transition:all .2s;
+}
+.auth-tab.active{background:var(--accent);color:#fff}
+.user-info{
+  display:flex;align-items:center;gap:12px;
+  padding:12px;background:var(--bg3);border-radius:10px;margin-bottom:16px;
+}
+.user-info-avatar{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;color:#fff;font-family:var(--font-d);flex-shrink:0;
+}
+.user-info-name{font-size:.88rem;font-weight:700;flex:1}
+.user-info-role{font-size:.68rem;color:var(--gold);font-family:var(--font-d);letter-spacing:1px}
+.forgot-link{
+  display:block;text-align:center;margin-top:10px;
+  font-size:.74rem;color:var(--text3);cursor:pointer;transition:color .2s;text-decoration:none;
+}
+.forgot-link:hover{color:var(--cyan)}
+
+/* ═══ ADMIN PANEL ═══ */
+.admin-panel{
+  padding:24px 16px 80px;max-width:1080px;margin:0 auto;
+}
+.admin-panel h2{
+  font-family:var(--font-d);font-size:2rem;letter-spacing:3px;
+  margin-bottom:24px;color:var(--accent);
+}
+.admin-tabs{
+  display:flex;gap:4px;margin-bottom:24px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:4px;overflow-x:auto;
+}
+.admin-tab{
+  background:none;border:none;color:var(--text3);cursor:pointer;
+  font-family:var(--font-b);font-size:.8rem;font-weight:700;
+  padding:8px 16px;border-radius:7px;transition:all .2s;white-space:nowrap;
+}
+.admin-tab:hover{color:var(--text2);background:var(--bg3)}
+.admin-tab.active{background:var(--accent);color:#fff}
+.admin-pane{display:none}
+.admin-pane.active{display:block}
+.admin-stats{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px;margin-bottom:28px;
+}
+.stat-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px;
+}
+.stat-value{
+  font-family:var(--font-d);font-size:2.2rem;color:var(--text);letter-spacing:1px;margin-bottom:2px;
+}
+.stat-label{font-size:.72rem;color:var(--text2);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+
+.user-row{
+  display:flex;align-items:center;gap:12px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:9px;
+  padding:12px 14px;margin-bottom:6px;
+}
+.user-row-email{flex:1;font-size:.87rem}
+.user-row-role{font-size:.7rem;color:var(--text3);font-family:var(--font-d);letter-spacing:1px}
+.user-row.user-banned{opacity:.5;border-color:rgba(232,54,93,.3)}
+
+/* ═══ MISC ═══ */
+.back-btn{
+  background:none;border:1px solid var(--border);color:var(--text2);
+  border-radius:8px;padding:6px 14px;cursor:pointer;
+  font-family:var(--font-b);font-size:.78rem;font-weight:600;transition:all .2s;flex-shrink:0;
+}
+.back-btn:hover{border-color:var(--text);color:var(--text)}
+.loader{text-align:center;color:var(--text2);padding:48px 20px;font-size:1.4rem}
+.empty-msg{text-align:center;color:var(--text2);padding:32px;font-size:.88rem}
+.swipe-hint{text-align:center;font-size:.72rem;color:var(--text3);padding:6px}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.ch-nav-row{
+  max-width:700px;margin:0 auto;padding:0 20px 20px;
+  display:flex;gap:10px;justify-content:space-between;
+}
+
+/* ═══ PASSWORD RESET MODAL ═══ */
+.reset-info{
+  background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.2);
+  border-radius:9px;padding:12px 14px;font-size:.8rem;color:var(--cyan);
+  line-height:1.6;margin-bottom:14px;
+}
+
+/* ═══ MOBILE ═══ */
+@media(max-width:480px){
+  .nav-tabs{display:none}
+  .hero h1{font-size:clamp(3rem,18vw,5rem)}
+  .blog-post-title{font-size:1.2rem}
+  nav{padding:0 10px;gap:5px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+<!-- ══ NAVBAR ══ -->
+<nav>
+  <div class="nav-logo" onclick="showPage('page-catalog')">
+    <div class="nav-avatar" id="nav-avatar-img">HB</div>
+    <div class="nav-title">HORNY<span>BIBLE</span></div>
+  </div>
+  <div class="nav-tabs" id="nav-tabs">
+    <button class="nav-tab active" onclick="showPageNav('page-catalog',this)">Каталог</button>
+    <button class="nav-tab" onclick="showPageNav('page-blog',this)">Блог</button>
+  </div>
+  <div class="nav-spacer"></div>
+  <span id="admin-badge">★ ADMIN</span>
+  <div class="nav-pill">
+    <button class="icon-btn" onclick="toggleSearch()" title="Поиск" id="search-toggle-btn">🔍</button>
+    <input class="nav-search" id="nav-search" placeholder="Поиск..." oninput="filterBySearch()">
+  </div>
+  <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" title="Тема">🌙</button>
+  <button class="nav-btn" onclick="openModal('modal-auth')" id="auth-btn">Войти</button>
+  <button class="nav-btn primary" onclick="openModal('modal-admin')" id="admin-add-btn" style="display:none">+ Манхва</button>
+</nav>
+
+<!-- ══ PAGE: CATALOG ══ -->
+<div class="page active" id="page-catalog">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">✦ ЛЮБИТЕЛЬСКИЕ ПЕРЕВОДЫ</div>
+      <h1><span class="h-accent">HORNY</span>BIBLE</h1>
+      <p class="hero-sub">Манхва на русском · Читай бесплатно · Только переводы 18+</p>
+      <div class="hero-cta">
+        <a class="btn btn-tg" href="https://t.me/h0rnybible" target="_blank">✈ Telegram</a>
+        <button class="btn btn-ghost" onclick="document.getElementById('hero-search-input').focus()">🔍 Найти</button>
+      </div>
+      <div class="hero-search-bar">
+        <input id="hero-search-input" type="text" placeholder="Название, автор, тег..." oninput="filterBySearch()">
+        <button class="hero-search-btn" onclick="filterBySearch()">→</button>
+      </div>
+    </div>
+  </div>
+  <div class="catalog-section">
+    <div class="section-header">
+      <span class="section-label">Каталог</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-chip active" onclick="setFilter('all',this)">Все</button>
+    </div>
+    <div id="catalog-grid"><div class="loader">⏳</div></div>
+  </div>
+</div>
+
+<!-- ══ PAGE: BLOG ══ -->
+<div class="page" id="page-blog">
+  <div class="blog-section">
+    <div class="section-header">
+      <span class="section-label">Блог</span>
+      <div class="section-line"></div>
+      <button class="btn btn-primary" onclick="openBlogModal()" id="btn-add-post" style="display:none;font-size:.76rem;padding:8px 18px">+ Пост</button>
+    </div>
+    <div id="blog-grid" class="blog-grid"><div class="loader">⏳</div></div>
+  </div>
+</div>
+
+<!-- ══ PAGE: DETAIL ══ -->
+<div class="page" id="page-detail">
+  <div class="detail-hero" id="detail-cover">
+    <div class="detail-overlay"></div>
+    <div class="detail-hero-content">
+      <h2 id="detail-title"></h2>
+      <div class="detail-author-line" id="detail-author"></div>
+      <div id="detail-tags"></div>
+    </div>
+  </div>
+  <div class="detail-body">
+    <p class="detail-desc" id="detail-desc"></p>
+    <div class="detail-actions">
+      <button class="btn btn-primary" onclick="readFirstChapter()">▶ Читать</button>
+      <button class="btn btn-ghost" id="btn-add-chapter" onclick="openChapterModal()" style="display:none">+ Глава</button>
+      <button class="btn btn-ghost" id="btn-edit-manhwa" onclick="openEditManhwa()" style="display:none">✏ Редакт.</button>
+      <button class="btn btn-ghost" onclick="showPage('page-catalog')">← Каталог</button>
+    </div>
+    <div class="chapters-header">Главы</div>
+    <div id="chapter-list"></div>
+  </div>
+</div>
+
+<!-- ══ PAGE: READER ══ -->
+<div class="page" id="page-reader">
+  <div class="reader-topbar">
+    <button class="back-btn" onclick="goBackToDetail()">← Назад</button>
+    <h3 id="reader-title"></h3>
+    <div class="view-toggle" id="view-toggle">
+      <button class="view-btn active" id="vbtn-scroll" onclick="setViewMode('scroll')">Лента</button>
+      <button class="view-btn" id="vbtn-page" onclick="setViewMode('page')">Страницы</button>
+    </div>
+  </div>
+
+  <div id="reader-scroll-wrap" class="active">
+    <div id="pdf-scroll-content"></div>
+    <div id="text-scroll-content" class="text-reader" style="display:none"></div>
+  </div>
+  <div id="reader-pager-wrap">
+    <div class="pager-canvas-wrap"><canvas id="pdf-canvas"></canvas></div>
+    <div class="swipe-hint">← свайп →</div>
+    <div class="pager-nav">
+      <button class="pager-btn" id="pager-prev" onclick="pagerPrev()">← Назад</button>
+      <span class="pager-info" id="pager-info">1 / 1</span>
+      <button class="pager-btn" id="pager-next" onclick="pagerNext()">Вперёд →</button>
+    </div>
+  </div>
+
+  <div class="ch-nav-row">
+    <button class="btn btn-ghost" id="prev-ch-btn" onclick="goChapter(-1)">← Предыдущая</button>
+    <button class="btn btn-ghost" id="next-ch-btn" onclick="goChapter(1)">Следующая →</button>
+  </div>
+
+  <div class="comments-section">
+    <div class="comments-title">💬 Комментарии</div>
+    <div id="comments-list"></div>
+    <div class="reply-indicator" id="reply-indicator">
+      <span>↩ Ответ: <strong id="reply-name"></strong></span>
+      <button class="reply-cancel" onclick="cancelReply()">✕</button>
+    </div>
+    <div class="comment-form">
+      <div class="form-row">
+        <input id="comm-name" type="text" placeholder="Имя (необязательно)">
+        <button class="btn btn-primary" onclick="submitComment()" style="border-radius:50px;padding:9px 18px">↑ Отправить</button>
+      </div>
+      <textarea id="comm-text" placeholder="Напиши комментарий..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: ADMIN ══ -->
+<div class="page" id="page-admin">
+  <div class="admin-panel">
+    <h2>ADMIN PANEL</h2>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('stats',this)">📊 Статистика</button>
+      <button class="admin-tab" onclick="switchAdminTab('users',this)">👥 Пользователи</button>
+      <button class="admin-tab" onclick="switchAdminTab('comms',this)">💬 Комментарии</button>
+      <button class="admin-tab" onclick="switchAdminTab('blog',this)">📝 Блог</button>
+    </div>
+    <div class="admin-pane active" id="admin-pane-stats">
+      <div class="admin-stats" id="admin-stats-grid">
+        <div class="stat-card"><div class="stat-value" id="stat-manhwa">—</div><div class="stat-label">Манхва</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-chapters">—</div><div class="stat-label">Глав</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-users">—</div><div class="stat-label">Пользователей</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-comments">—</div><div class="stat-label">Комментариев</div></div>
+      </div>
+      <div class="section-header"><span class="section-label">Активность</span><div class="section-line"></div></div>
+      <div id="admin-recent-comments"></div>
+    </div>
+    <div class="admin-pane" id="admin-pane-users">
+      <div id="admin-users-list"><div class="loader">⏳</div></div>
+    </div>
+    <div class="admin-pane" id="admin-pane-comms">
+      <div id="admin-all-comments"><div class="loader">⏳</div></div>
+    </div>
+    <div class="admin-pane" id="admin-pane-blog">
+      <button class="btn btn-primary" onclick="openBlogModal()" style="margin-bottom:18px">+ Новый пост</button>
+      <div id="admin-blog-list"></div>
+    </div>
+    <div style="margin-top:28px">
+      <button class="btn btn-ghost" onclick="showPage('page-catalog')">← На главную</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: AUTH ══ -->
+<div class="modal-overlay" id="modal-auth">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-head">
+      <h3>АККАУНТ</h3>
+      <button class="modal-close" onclick="closeModal('modal-auth')">✕</button>
+    </div>
+    <div id="auth-user-info" style="display:none"></div>
+    <div id="auth-form-wrap">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab('login')">Войти</button>
+        <button class="auth-tab" onclick="switchAuthTab('register')">Регистрация</button>
+      </div>
+      <label>Email</label>
+      <input id="auth-email" type="email" placeholder="email@example.com">
+      <label>Пароль</label>
+      <input id="auth-password" type="password" placeholder="••••••••">
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal('modal-auth')">Отмена</button>
+        <button class="btn btn-primary" id="auth-submit-btn" onclick="doAuth()">Войти</button>
+      </div>
+      <button class="forgot-link" onclick="showForgotForm()">Забыл пароль?</button>
+      <div id="forgot-wrap" style="display:none;margin-top:14px">
+        <div class="reset-info">Ссылка придёт на email — переходи по ней и меняй пароль прямо на сайте.</div>
+        <label>Email для сброса</label>
+        <input id="forgot-email" type="email" placeholder="email@example.com">
+        <button class="btn btn-primary" onclick="doForgotPassword()" style="width:100%">Отправить письмо</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: RESET PASSWORD ══ -->
+<div class="modal-overlay" id="modal-reset">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-head"><h3>НОВЫЙ ПАРОЛЬ</h3></div>
+    <div class="reset-info">Введи новый пароль для своего аккаунта.</div>
+    <label>Новый пароль</label>
+    <input id="new-password" type="password" placeholder="Минимум 6 символов">
+    <label>Повтори пароль</label>
+    <input id="new-password2" type="password" placeholder="••••••••">
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="doResetPassword()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: ADD/EDIT MANHWA ══ -->
+<div class="modal-overlay" id="modal-admin">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-manhwa-title">НОВАЯ МАНХВА</h3>
+      <button class="modal-close" onclick="closeModal('modal-admin')">✕</button>
+    </div>
+    <div class="modal-note">
+      💡 Для обложки вставь прямую ссылку на картинку (например, <code>https://i.imgur.com/xxx.jpg</code>).
+      Можешь загрузить на <code>imgur.com</code> и скопировать прямую ссылку.
+    </div>
+    <label>Название *</label>
+    <input id="adm-title" type="text" placeholder="Solo Leveling">
+    <label>Автор</label>
+    <input id="adm-author" type="text" placeholder="Автор манхвы">
+    <label>Обложка — прямая ссылка на картинку</label>
+    <div class="url-input-wrap">
+      <input id="adm-cover" type="url" placeholder="https://i.imgur.com/example.jpg" oninput="previewCoverUrl(this.value)">
+      <img id="cover-url-preview" class="url-preview" alt="">
+    </div>
+    <label>Описание</label>
+    <textarea id="adm-desc" placeholder="Краткое описание..."></textarea>
+    <label>Теги (через запятую)</label>
+    <input id="adm-tags" type="text" placeholder="экшн, фэнтези, романтика, 18+">
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-admin')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveManhwa()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: ADD/EDIT CHAPTER ══ -->
+<div class="modal-overlay" id="modal-chapter-add">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-chapter-title">НОВАЯ ГЛАВА</h3>
+      <button class="modal-close" onclick="closeModal('modal-chapter-add')">✕</button>
+    </div>
+    <div class="modal-note">
+      💡 Для PDF вставь прямую ссылку. Хостинг: <code>drive.google.com</code> (должен быть открытый доступ),
+      <code>dropbox.com</code> (замени <code>?dl=0</code> на <code>?dl=1</code>) или любой прямой PDF URL.
+    </div>
+    <label>Номер главы *</label>
+    <input id="ch-num" type="number" value="1" min="1">
+    <label>Название главы *</label>
+    <input id="ch-title" type="text" placeholder="Пробуждение">
+    <label>Ссылка на PDF (прямая)</label>
+    <input id="ch-pdf-url" type="url" placeholder="https://drive.google.com/uc?export=download&id=...">
+    <label>— или текст главы (если нет PDF) —</label>
+    <textarea id="ch-content" placeholder="Текст перевода..." style="min-height:140px"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-chapter-add')">Отмена</button>
+      <button class="btn btn-primary" id="save-chapter-btn" onclick="saveChapter()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: BLOG POST ══ -->
+<div class="modal-overlay" id="modal-blog">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-blog-title">НОВЫЙ ПОСТ</h3>
+      <button class="modal-close" onclick="closeModal('modal-blog')">✕</button>
+    </div>
+    <label>Тег / Рубрика</label>
+    <input id="blog-tag" type="text" placeholder="ОБНОВЛЕНИЕ / АНОНС / МЫСЛИ">
+    <label>Заголовок *</label>
+    <input id="blog-title" type="text" placeholder="Заголовок поста">
+    <label>Текст *</label>
+    <textarea id="blog-text" placeholder="Текст поста..." style="min-height:180px"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-blog')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveBlogPost()">Опубликовать</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FIREBASE SDK ══ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, getDocs, doc, setDoc,
+  getDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot,
+  serverTimestamp, where, limit, getCountFromServer
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  signOut, sendPasswordResetEmail, confirmPasswordReset,
+  verifyPasswordResetCode
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// ══ FIREBASE CONFIG ══
+const firebaseConfig = {
+  apiKey: "AIzaSyC0rJpX3Fg0SvC9SmWaFeZ8h82sd59TiMY",
+  authDomain: "hornybible-b108f.firebaseapp.com",
+  databaseURL: "https://hornybible-b108f-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "hornybible-b108f",
+  storageBucket: "hornybible-b108f.firebasestorage.app",
+  messagingSenderId: "1009279707076",
+  appId: "1:1009279707076:web:d91b309187e65dc0fe6691"
+};
+
+// ══ ADMIN UID — замени на свой UID из Firebase Auth ══
+// Как найти: Firebase Console → Authentication → Users → скопируй UID
+const ADMIN_UID = "REPLACE_WITH_YOUR_ADMIN_UID";
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+
+// ══ STATE ══
+let currentUser = null;
+let currentManhwaId = null;
+let currentChapterId = null;
+let currentChapterList = [];
+let currentChapterIndex = 0;
+let unsubComments = null;
+let editManhwaId = null;
+let editChapterId = null;
+let editBlogId = null;
+let replyToData = null;
+let currentFilter = 'all';
+let allTags = new Set();
+
+// pdfjs
+let pdfDoc = null;
+let pdfCurrentPage = 1;
+let pdfTotalPages = 0;
+let viewMode = 'scroll';
+let currentChapterType = 'text';
+
+// ── Helpers ──
+function isAdmin() { return currentUser && currentUser.uid === ADMIN_UID; }
+window.isAdmin = isAdmin;
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+window.showToast = showToast;
+
+function updateAdminUI() {
+  const show = isAdmin();
+  ['admin-badge','admin-add-btn'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = show ? '' : 'none';
+  });
+  ['btn-add-chapter','btn-edit-manhwa'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = show ? '' : 'none';
+  });
+  const postBtn = document.getElementById('btn-add-post');
+  if (postBtn) postBtn.style.display = show ? '' : 'none';
+  if (show) document.body.classList.add('admin-mode');
+  else document.body.classList.remove('admin-mode');
+}
+
+function updateAuthBtn() {
+  const btn = document.getElementById('auth-btn');
+  if (!btn) return;
+  if (currentUser && !currentUser.isAnonymous) {
+    btn.textContent = '👤 ' + (currentUser.email?.split('@')[0] || 'Профиль');
+    if (isAdmin()) {
+      // Show admin panel link
+      const existing = document.getElementById('admin-panel-btn');
+      if (!existing) {
+        const ab = document.createElement('button');
+        ab.className = 'nav-btn';
+        ab.id = 'admin-panel-btn';
+        ab.textContent = '⚙ Панель';
+        ab.onclick = () => { showPage('page-admin'); loadAdminPanel(); };
+        document.querySelector('nav').insertBefore(ab, document.getElementById('admin-add-btn'));
+      }
+    }
+  } else {
+    btn.textContent = 'Войти';
+    const ap = document.getElementById('admin-panel-btn');
+    if (ap) ap.remove();
+  }
+}
+
+// ── Auth ──
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+  updateAdminUI();
+  updateAuthBtn();
+  if (user) loadReadingProgress();
+  updateAuthModal();
+  checkPasswordReset();
+});
+
+function checkPasswordReset() {
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get('mode');
+  const oobCode = params.get('oobCode');
+  if (mode === 'resetPassword' && oobCode) {
+    window._resetOobCode = oobCode;
+    openModal('modal-reset');
+    // Clean URL
+    history.replaceState({}, '', window.location.pathname);
+  }
+}
+
+window.doResetPassword = async function() {
+  const pwd = document.getElementById('new-password').value;
+  const pwd2 = document.getElementById('new-password2').value;
+  if (pwd.length < 6) return showToast('Минимум 6 символов','error');
+  if (pwd !== pwd2) return showToast('Пароли не совпадают','error');
+  if (!window._resetOobCode) return showToast('Ссылка недействительна','error');
+  try {
+    await confirmPasswordReset(auth, window._resetOobCode, pwd);
+    closeModal('modal-reset');
+    showToast('✓ Пароль изменён! Войди заново','success');
+    openModal('modal-auth');
+  } catch(e) {
+    showToast('Ошибка: ' + e.message, 'error');
+  }
+};
+
+function updateAuthModal() {
+  const infoWrap = document.getElementById('auth-user-info');
+  const formWrap = document.getElementById('auth-form-wrap');
+  if (!infoWrap || !formWrap) return;
+  if (currentUser && !currentUser.isAnonymous) {
+    infoWrap.style.display = '';
+    infoWrap.innerHTML = `
+      <div class="user-info">
+        <div class="user-info-avatar">${(currentUser.email[0]||'?').toUpperCase()}</div>
+        <div>
+          <div class="user-info-name">${currentUser.email}</div>
+          ${isAdmin() ? '<div class="user-info-role">★ ADMIN</div>' : '<div style="font-size:.7rem;color:var(--text2)">Читатель</div>'}
+        </div>
+        <button class="btn btn-ghost" onclick="doSignOut()" style="font-size:.74rem;padding:7px 14px">Выйти</button>
+      </div>`;
+    formWrap.style.display = 'none';
+  } else {
+    infoWrap.style.display = 'none';
+    formWrap.style.display = '';
+  }
+}
+
+window.doAuth = async function() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-password').value;
+  const isLogin = document.getElementById('auth-submit-btn').textContent === 'Войти';
+  if (!email || !pass) return showToast('Заполни все поля','error');
+  try {
+    if (isLogin) {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } else {
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      // Save user to Firestore
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        email, createdAt: serverTimestamp(), banned: false, role: 'reader'
+      });
+    }
+    closeModal('modal-auth');
+    showToast('✓ Добро пожаловать!');
+  } catch(e) {
+    const msg = e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential'
+      ? 'Неверный email или пароль' : e.message;
+    showToast(msg,'error');
+  }
+};
+
+window.doSignOut = async function() {
+  await signOut(auth);
+  closeModal('modal-auth');
+  showToast('Вышел из аккаунта','info');
+};
+
+window.switchAuthTab = function(tab) {
+  const isLogin = tab === 'login';
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', isLogin ? i===0 : i===1));
+  document.getElementById('auth-submit-btn').textContent = isLogin ? 'Войти' : 'Зарегистрироваться';
+  document.getElementById('forgot-wrap').style.display = 'none';
+};
+
+window.showForgotForm = function() {
+  document.getElementById('forgot-wrap').style.display = '';
+  const em = document.getElementById('auth-email').value;
+  document.getElementById('forgot-email').value = em;
+};
+
+window.doForgotPassword = async function() {
+  const email = document.getElementById('forgot-email').value.trim();
+  if (!email) return showToast('Введи email','error');
+  try {
+    await sendPasswordResetEmail(auth, email, {
+      url: 'https://hornybiblesite.github.io/HORNYBIBLEsite/'
+    });
+    showToast('✓ Письмо отправлено! Проверь почту');
+    document.getElementById('forgot-wrap').style.display = 'none';
+  } catch(e) {
+    showToast(e.message,'error');
+  }
+};
+
+// ── Reading Progress ──
+async function saveProgress(manhwaId, chapterId, chapterTitle) {
+  if (!currentUser || currentUser.isAnonymous) return;
+  await setDoc(doc(db, 'progress', `${currentUser.uid}_${manhwaId}`), {
+    manhwaId, chapterId, chapterTitle,
+    uid: currentUser.uid, updatedAt: serverTimestamp()
+  });
+}
+
+async function loadReadingProgress() {
+  if (!currentUser) return;
+  try {
+    const snap = await getDocs(query(collection(db,'progress'), where('uid','==',currentUser.uid)));
+    snap.forEach(d => {
+      const data = d.data();
+      const el = document.querySelector(`.manhwa-card[data-id="${data.manhwaId}"] .progress-badge`);
+      if (el) el.textContent = `▶ ${data.chapterTitle}`;
+    });
+  } catch(e) {}
+}
+
+// ── Cover URL preview ──
+window.previewCoverUrl = function(url) {
+  const img = document.getElementById('cover-url-preview');
+  if (!img) return;
+  if (url && url.startsWith('http')) {
+    img.src = url;
+    img.style.display = 'block';
+    img.onerror = () => { img.style.display = 'none'; };
+  } else {
+    img.style.display = 'none';
+  }
+};
+
+// ── Manhwa CRUD ──
+window.saveManhwa = async function() {
+  if (!isAdmin()) return showToast('Только для админа','error');
+  const title  = document.getElementById('adm-title').value.trim();
+  const author = document.getElementById('adm-author').value.trim();
+  const cover  = document.getElementById('adm-cover').value.trim();
+  const desc   = document.getElementById('adm-desc').value.trim();
+  const tags   = document.getElementById('adm-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  if (!title) return showToast('Введи название','error');
+  try {
+    if (editManhwaId) {
+      await updateDoc(doc(db,'manhwa',editManhwaId), { title, author, cover, desc, tags });
+      showToast('✓ Манхва обновлена');
+      closeModal('modal-admin');
+      openManhwa(editManhwaId);
+    } else {
+      await addDoc(collection(db,'manhwa'), { title, author, cover, desc, tags, createdAt: serverTimestamp() });
+      showToast('✓ Манхва добавлена');
+      closeModal('modal-admin');
+      loadCatalog();
+    }
+    editManhwaId = null;
+  } catch(e) { showToast(e.message,'error'); }
+};
+
+window.openEditManhwa = async function() {
+  if (!isAdmin() || !currentManhwaId) return;
+  editManhwaId = currentManhwaId;
+  const snap = await getDoc(doc(db,'manhwa',currentManhwaId));
+  const m = snap.data();
+  document.getElementById('modal-manhwa-title').textContent = 'РЕДАКТИРОВАТЬ';
+  document.getElementById('adm-title').value  = m.title||'';
+  document.getElementById('adm-author').value = m.author||'';
+  document.getElementById('adm-cover').value  = m.cover||'';
+  document.getElementById('adm-desc').value   = m.desc||'';
+  document.getElementById('adm-tags').value   = (m.tags||[]).join(', ');
+  previewCoverUrl(m.cover||'');
+  openModal('modal-admin');
+};
+
+window.deleteManhwa = async function(id) {
+  if (!isAdmin()) return;
+  if (!confirm('Удалить манхву и все её данные?')) return;
+  await deleteDoc(doc(db,'manhwa',id));
+  showToast('Удалено');
+  loadCatalog();
+};
+
+// ── Catalog ──
+window.loadCatalog = async function() {
+  const grid = document.getElementById('catalog-grid');
+  grid.innerHTML = '<div class="loader">⏳</div>';
+  allTags.clear();
+  try {
+    const snap = await getDocs(query(collection(db,'manhwa'), orderBy('createdAt','desc')));
+    if (snap.empty) { grid.innerHTML = '<p class="empty-msg">Скоро будут переводы!</p>'; return; }
+    grid.innerHTML = '';
+    let idx = 0;
+    snap.forEach(d => {
+      const m = d.data();
+      (m.tags||[]).forEach(t => allTags.add(t));
+      const tagHtml = (m.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+      const isNew = m.createdAt && (Date.now() - m.createdAt.toMillis() < 7*24*3600*1000);
+      grid.innerHTML += `
+        <div class="manhwa-card" data-id="${d.id}" data-tags="${(m.tags||[]).join(',')}" onclick="openManhwa('${d.id}')" style="animation-delay:${idx*0.04}s">
+          ${isNew ? '<div class="new-badge">NEW</div>' : ''}
+          <div class="card-cover" style="${m.cover ? `background-image:url('${m.cover}')` : ''}">
+            ${!m.cover ? `<div class="cover-placeholder">${(m.title[0]||'?').toUpperCase()}</div>` : ''}
+            <div class="card-overlay"></div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">${m.title}</div>
+            <div class="card-author">${m.author||''}</div>
+            <div class="card-tags">${tagHtml}</div>
+            <div class="progress-badge"></div>
+          </div>
+          <button class="card-admin-btn card-edit-btn" onclick="event.stopPropagation();editManhwaFromCard('${d.id}')">✏</button>
+          <button class="card-admin-btn card-del-btn" onclick="event.stopPropagation();deleteManhwa('${d.id}')">✕</button>
+        </div>`;
+      idx++;
+    });
+    buildFilterBar();
+    loadReadingProgress();
+    filterBySearch();
+  } catch(e) { grid.innerHTML = `<p class="empty-msg">Ошибка: ${e.message}</p>`; }
+};
+
+window.editManhwaFromCard = async function(id) {
+  currentManhwaId = id;
+  await window.openEditManhwa();
+};
+
+function buildFilterBar() {
+  const bar = document.getElementById('filter-bar');
+  let html = '<button class="filter-chip' + (currentFilter==='all'?' active':'') + '" onclick="setFilter(\'all\',this)">Все</button>';
+  allTags.forEach(tag => {
+    html += `<button class="filter-chip${currentFilter===tag?' active':''}" onclick="setFilter('${tag}',this)">${tag}</button>`;
+  });
+  bar.innerHTML = html;
+}
+
+window.setFilter = function(tag, el) {
+  currentFilter = tag;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  filterBySearch();
+};
+
+// ── Detail ──
+window.openManhwa = async function(id) {
+  currentManhwaId = id;
+  const snap = await getDoc(doc(db,'manhwa',id));
+  if (!snap.exists()) return;
+  const m = snap.data();
+  document.getElementById('detail-title').textContent = m.title;
+  document.getElementById('detail-author').textContent = m.author||'';
+  document.getElementById('detail-desc').textContent = m.desc||'';
+  document.getElementById('detail-cover').style.backgroundImage = m.cover ? `url('${m.cover}')` : '';
+  document.getElementById('detail-tags').innerHTML = (m.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+  document.getElementById('btn-add-chapter').style.display = isAdmin() ? '' : 'none';
+  document.getElementById('btn-edit-manhwa').style.display = isAdmin() ? '' : 'none';
+  editManhwaId = null;
+  await loadChapterList(id);
+  showPage('page-detail');
+};
+
+window.loadChapterList = async function(id) {
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = '<div class="loader" style="padding:20px">⏳</div>';
+  const snap = await getDocs(query(collection(db,'manhwa',id,'chapters'), orderBy('num')));
+  list.innerHTML = '';
+  if (snap.empty) { list.innerHTML = '<p class="empty-msg">Глав пока нет</p>'; return; }
+  currentChapterList = [];
+  snap.forEach(d => {
+    const ch = d.data();
+    currentChapterList.push({ id: d.id, ...ch });
+    const isPdf = ch.type === 'pdf';
+    const adminBtns = isAdmin() ? `
+      <div class="ch-admin-btns">
+        <button class="btn-tiny" onclick="event.stopPropagation();openEditChapter('${d.id}')">✏</button>
+        <button class="btn-tiny danger" onclick="event.stopPropagation();deleteChapter('${id}','${d.id}')">✕</button>
+      </div>` : '';
+    list.innerHTML += `
+      <div class="chapter-row" onclick="readChapter('${id}','${d.id}')">
+        <span class="ch-num">ГЛ. ${ch.num}</span>
+        <span class="ch-name">${ch.title}</span>
+        ${isPdf ? '<span style="font-size:.66rem;color:var(--text3);margin-right:4px">PDF</span>' : ''}
+        ${adminBtns}
+        <span class="ch-arrow">→</span>
+      </div>`;
+  });
+};
+
+// ── Chapter modal ──
+window.openChapterModal = function() {
+  editChapterId = null;
+  document.getElementById('modal-chapter-title').textContent = 'НОВАЯ ГЛАВА';
+  document.getElementById('save-chapter-btn').textContent = 'Сохранить';
+  document.getElementById('ch-num').value = currentChapterList.length + 1;
+  document.getElementById('ch-title').value = '';
+  document.getElementById('ch-pdf-url').value = '';
+  document.getElementById('ch-content').value = '';
+  openModal('modal-chapter-add');
+};
+
+window.openEditChapter = async function(chId) {
+  const snap = await getDoc(doc(db,'manhwa',currentManhwaId,'chapters',chId));
+  if (!snap.exists()) return;
+  const ch = snap.data();
+  editChapterId = chId;
+  document.getElementById('modal-chapter-title').textContent = 'РЕДАКТИРОВАТЬ ГЛАВУ';
+  document.getElementById('save-chapter-btn').textContent = 'Обновить';
+  document.getElementById('ch-num').value = ch.num;
+  document.getElementById('ch-title').value = ch.title||'';
+  document.getElementById('ch-pdf-url').value = ch.pdfUrl||'';
+  document.getElementById('ch-content').value = ch.content||'';
+  openModal('modal-chapter-add');
+};
+
+window.saveChapter = async function() {
+  if (!isAdmin()) return showToast('Только для админа','error');
+  const title = document.getElementById('ch-title').value.trim();
+  const num   = parseInt(document.getElementById('ch-num').value)||1;
+  const pdfUrl = document.getElementById('ch-pdf-url').value.trim();
+  const textContent = document.getElementById('ch-content').value.trim();
+  if (!title) return showToast('Введи название главы','error');
+  if (!pdfUrl && !textContent) return showToast('Добавь PDF ссылку или текст','error');
+
+  const chapterData = {
+    title, num, updatedAt: serverTimestamp(),
+    ...(pdfUrl ? { pdfUrl, type: 'pdf' } : { content: textContent, type: 'text' })
+  };
+
+  try {
+    if (editChapterId) {
+      await updateDoc(doc(db,'manhwa',currentManhwaId,'chapters',editChapterId), chapterData);
+      showToast('✓ Глава обновлена');
+    } else {
+      chapterData.createdAt = serverTimestamp();
+      await addDoc(collection(db,'manhwa',currentManhwaId,'chapters'), chapterData);
+      showToast('✓ Глава добавлена');
+    }
+    closeModal('modal-chapter-add');
+    loadChapterList(currentManhwaId);
+    editChapterId = null;
+  } catch(e) { showToast(e.message,'error'); }
+};
+
+window.deleteChapter = async function(manhwaId, chId) {
+  if (!isAdmin() || !confirm('Удалить главу?')) return;
+  await deleteDoc(doc(db,'manhwa',manhwaId,'chapters',chId));
+  showToast('Глава удалена');
+  loadChapterList(manhwaId);
+};
+
+// ── Reader ──
+window.readChapter = async function(manhwaId, chapterId) {
+  currentManhwaId = manhwaId;
+  currentChapterId = chapterId;
+  currentChapterIndex = currentChapterList.findIndex(c => c.id === chapterId);
+  const snap = await getDoc(doc(db,'manhwa',manhwaId,'chapters',chapterId));
+  const ch = snap.data();
+  document.getElementById('reader-title').textContent = ch.title;
+  saveProgress(manhwaId, chapterId, ch.title);
+  loadComments(manhwaId, chapterId);
+
+  document.getElementById('prev-ch-btn').disabled = currentChapterIndex <= 0;
+  document.getElementById('next-ch-btn').disabled = currentChapterIndex >= currentChapterList.length - 1;
+
+  if (ch.type === 'pdf' && ch.pdfUrl) {
+    currentChapterType = 'pdf';
+    document.getElementById('view-toggle').style.display = '';
+    await loadPdf(ch.pdfUrl);
+  } else {
+    currentChapterType = 'text';
+    document.getElementById('view-toggle').style.display = 'none';
+    document.getElementById('reader-scroll-wrap').classList.add('active');
+    document.getElementById('reader-pager-wrap').classList.remove('active');
+    document.getElementById('pdf-scroll-content').innerHTML = '';
+    const textWrap = document.getElementById('text-scroll-content');
+    textWrap.style.display = '';
+    textWrap.innerHTML = (ch.content||'').split('\n').map(p=>p?`<p>${p}</p>`:'<br>').join('');
+  }
+  showPage('page-reader');
+  window.scrollTo(0,0);
+};
+
+window.readFirstChapter = function() {
+  const first = document.querySelector('#chapter-list .chapter-row');
+  if (first) first.click();
+  else showToast('Глав пока нет','error');
+};
+
+window.goChapter = async function(dir) {
+  const newIdx = currentChapterIndex + dir;
+  if (newIdx < 0 || newIdx >= currentChapterList.length) return;
+  await readChapter(currentManhwaId, currentChapterList[newIdx].id);
+};
+
+// ── PDF.js ──
+const pdfScript = document.createElement('script');
+pdfScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+document.head.appendChild(pdfScript);
+pdfScript.onload = () => {
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+};
+
+async function loadPdf(url) {
+  const scrollWrap = document.getElementById('reader-scroll-wrap');
+  const scrollContent = document.getElementById('pdf-scroll-content');
+  document.getElementById('text-scroll-content').style.display = 'none';
+  scrollContent.innerHTML = '<div class="pdf-loading"><div class="pdf-spinner"></div>Загрузка PDF...</div>';
+  scrollWrap.classList.add('active');
+  document.getElementById('reader-pager-wrap').classList.remove('active');
+  if (!window.pdfjsLib) await new Promise(r => setTimeout(r, 1500));
+  try {
+    pdfDoc = await window.pdfjsLib.getDocument({
+      url,
+      cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+      cMapPacked: true
+    }).promise;
+    pdfTotalPages = pdfDoc.numPages;
+    pdfCurrentPage = 1;
+    if (viewMode === 'scroll') await renderScrollMode();
+    else await renderPageMode(1);
+  } catch(e) {
+    scrollContent.innerHTML = `<p class="empty-msg">Ошибка загрузки PDF.<br><small>Убедись, что ссылка открыта для всех и является прямой ссылкой на PDF файл.</small><br><a href="${url}" target="_blank" style="color:var(--cyan)">Открыть напрямую</a></p>`;
+  }
+}
+
+async function renderScrollMode() {
+  const scrollContent = document.getElementById('pdf-scroll-content');
+  scrollContent.innerHTML = '';
+  for (let i = 1; i <= pdfTotalPages; i++) {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'display:block;width:100%;max-width:880px;margin:0 auto 2px';
+    scrollContent.appendChild(canvas);
+    await renderPdfPage(i, canvas);
+  }
+}
+
+async function renderPageMode(pageNum) {
+  if (!pdfDoc) return;
+  pdfCurrentPage = Math.max(1, Math.min(pageNum, pdfTotalPages));
+  const canvas = document.getElementById('pdf-canvas');
+  document.getElementById('reader-scroll-wrap').classList.remove('active');
+  document.getElementById('reader-pager-wrap').classList.add('active');
+  await renderPdfPage(pdfCurrentPage, canvas);
+  document.getElementById('pager-info').textContent = `${pdfCurrentPage} / ${pdfTotalPages}`;
+  document.getElementById('pager-prev').disabled = pdfCurrentPage <= 1;
+  document.getElementById('pager-next').disabled = pdfCurrentPage >= pdfTotalPages;
+}
+
+async function renderPdfPage(num, canvas) {
+  const page = await pdfDoc.getPage(num);
+  const vp = page.getViewport({ scale: 1 });
+  const containerW = Math.min(window.innerWidth - 20, 880);
+  const scale = containerW / vp.width;
+  const viewport = page.getViewport({ scale });
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+}
+
+window.setViewMode = function(mode) {
+  viewMode = mode;
+  document.getElementById('vbtn-scroll').classList.toggle('active', mode==='scroll');
+  document.getElementById('vbtn-page').classList.toggle('active', mode==='page');
+  if (!pdfDoc) return;
+  if (mode === 'scroll') {
+    renderScrollMode();
+    document.getElementById('reader-scroll-wrap').classList.add('active');
+    document.getElementById('reader-pager-wrap').classList.remove('active');
+  } else {
+    renderPageMode(pdfCurrentPage||1);
+  }
+};
+window.pagerPrev = function() { if (pdfCurrentPage > 1) renderPageMode(pdfCurrentPage-1); };
+window.pagerNext = function() { if (pdfCurrentPage < pdfTotalPages) renderPageMode(pdfCurrentPage+1); };
+
+// Swipe
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive:true});
+document.addEventListener('touchend', e => {
+  if (!document.getElementById('page-reader').classList.contains('active')) return;
+  if (viewMode !== 'page') return;
+  const dx = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 50) { dx > 0 ? pagerNext() : pagerPrev(); }
+}, {passive:true});
+
+// ── Comments ──
+let replyTo = null;
+
+function loadComments(manhwaId, chapterId) {
+  if (unsubComments) unsubComments();
+  const q = query(
+    collection(db,'manhwa',manhwaId,'chapters',chapterId,'comments'),
+    orderBy('createdAt','asc')
+  );
+  unsubComments = onSnapshot(q, snap => {
+    const box = document.getElementById('comments-list');
+    box.innerHTML = '';
+    if (snap.empty) { box.innerHTML = '<p class="empty-msg" style="padding:16px">Будь первым!</p>'; return; }
+    snap.forEach(d => {
+      const c = d.data();
+      const isMe = currentUser && c.uid === currentUser.uid;
+      const isAdmComment = c.uid === ADMIN_UID;
+      const replyPreview = c.replyTo ? `
+        <div class="comment-reply-preview">
+          <div class="comment-reply-name">↩ ${c.replyTo.name}</div>
+          ${c.replyTo.text.slice(0,80)}${c.replyTo.text.length>80?'…':''}
+        </div>` : '';
+      const canDel = isMe || isAdmin();
+      const dateStr = c.createdAt ? new Date(c.createdAt.toMillis()).toLocaleString('ru-RU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+      box.innerHTML += `
+        <div class="comment ${isMe?'comment-mine':''} ${isAdmComment?'comment-admin':''}">
+          <div class="comment-header">
+            <span class="comment-name ${isAdmComment?'admin-name':''}">${c.name||'Аноним'}${isAdmComment?' 👑':''}</span>
+            <span class="comment-date">${dateStr}</span>
+          </div>
+          ${replyPreview}
+          <div class="comment-text">${escHtml(c.text)}</div>
+          <div class="comment-actions">
+            ${currentUser ? `<button class="comment-action-btn" onclick="setReply('${d.id}','${escAttr(c.name||'Аноним')}','${escAttr(c.text.slice(0,60))}')">↩ Ответить</button>` : ''}
+            ${canDel ? `<button class="comment-action-btn del" onclick="deleteComment('${d.id}')">✕ Удалить</button>` : ''}
+          </div>
+        </div>`;
+    });
+    box.scrollTop = box.scrollHeight;
+  });
+}
+
+window.setReply = function(id, name, text) {
+  replyTo = { id, name, text };
+  document.getElementById('reply-indicator').classList.add('visible');
+  document.getElementById('reply-name').textContent = name;
+  document.getElementById('comm-text').focus();
+};
+window.cancelReply = function() {
+  replyTo = null;
+  document.getElementById('reply-indicator').classList.remove('visible');
+};
+
+window.submitComment = async function() {
+  const nameEl = document.getElementById('comm-name');
+  const textEl = document.getElementById('comm-text');
+  const name = nameEl.value.trim() || (currentUser && !currentUser.isAnonymous ? currentUser.email?.split('@')[0] : 'Аноним');
+  const text = textEl.value.trim();
+  if (!text) return;
+  if (!currentManhwaId || !currentChapterId) return;
+  if (!currentUser) {
+    openModal('modal-auth');
+    showToast('Войди, чтобы комментировать','info');
+    return;
+  }
+  const data = {
+    name, text,
+    uid: currentUser.uid,
+    createdAt: serverTimestamp(),
+    ...(replyTo ? { replyTo } : {})
+  };
+  await addDoc(collection(db,'manhwa',currentManhwaId,'chapters',currentChapterId,'comments'), data);
+  textEl.value = '';
+  cancelReply();
+};
+
+window.deleteComment = async function(commentId) {
+  if (!confirm('Удалить?')) return;
+  await deleteDoc(doc(db,'manhwa',currentManhwaId,'chapters',currentChapterId,'comments',commentId));
+};
+
+// ── Blog ──
+window.loadBlog = async function() {
+  const grid = document.getElementById('blog-grid');
+  grid.innerHTML = '<div class="loader">⏳</div>';
+  try {
+    const snap = await getDocs(query(collection(db,'blog'), orderBy('createdAt','desc')));
+    if (snap.empty) { grid.innerHTML = '<p class="empty-msg">Постов пока нет</p>'; return; }
+    grid.innerHTML = '';
+    snap.forEach(d => {
+      const p = d.data();
+      const dateStr = p.createdAt ? new Date(p.createdAt.toMillis()).toLocaleDateString('ru-RU') : '';
+      grid.innerHTML += `
+        <div class="blog-post" data-blog-id="${d.id}">
+          ${isAdmin() ? `<div class="blog-post-actions">
+            <button class="btn-tiny" onclick="event.stopPropagation();openEditBlog('${d.id}')">✏</button>
+            <button class="btn-tiny danger" onclick="event.stopPropagation();deleteBlogPost('${d.id}')">✕</button>
+          </div>` : ''}
+          ${p.tag ? `<div class="blog-post-tag">${p.tag}</div>` : ''}
+          <div class="blog-post-title">${p.title}</div>
+          <div class="blog-post-body">${escHtml(p.text)}</div>
+          <div class="blog-post-meta">
+            <span>✍ ${p.author||'Автор'}</span>
+            <span>· ${dateStr}</span>
+          </div>
+        </div>`;
+    });
+  } catch(e) { grid.innerHTML = `<p class="empty-msg">Ошибка: ${e.message}</p>`; }
+};
+
+window.openBlogModal = function() {
+  editBlogId = null;
+  document.getElementById('modal-blog-title').textContent = 'НОВЫЙ ПОСТ';
+  document.getElementById('blog-tag').value = '';
+  document.getElementById('blog-title').value = '';
+  document.getElementById('blog-text').value = '';
+  openModal('modal-blog');
+};
+
+window.openEditBlog = async function(id) {
+  const snap = await getDoc(doc(db,'blog',id));
+  if (!snap.exists()) return;
+  const p = snap.data();
+  editBlogId = id;
+  document.getElementById('modal-blog-title').textContent = 'РЕДАКТИРОВАТЬ ПОСТ';
+  document.getElementById('blog-tag').value = p.tag||'';
+  document.getElementById('blog-title').value = p.title||'';
+  document.getElementById('blog-text').value = p.text||'';
+  openModal('modal-blog');
+};
+
+window.saveBlogPost = async function() {
+  if (!isAdmin()) return showToast('Только для админа','error');
+  const tag   = document.getElementById('blog-tag').value.trim();
+  const title = document.getElementById('blog-title').value.trim();
+  const text  = document.getElementById('blog-text').value.trim();
+  if (!title || !text) return showToast('Заполни заголовок и текст','error');
+  const authorEmail = currentUser?.email?.split('@')[0] || 'Автор';
+  try {
+    if (editBlogId) {
+      await updateDoc(doc(db,'blog',editBlogId), { tag, title, text });
+      showToast('✓ Пост обновлён');
+    } else {
+      await addDoc(collection(db,'blog'), { tag, title, text, author: authorEmail, createdAt: serverTimestamp() });
+      showToast('✓ Пост опубликован');
+    }
+    closeModal('modal-blog');
+    loadBlog();
+    editBlogId = null;
+  } catch(e) { showToast(e.message,'error'); }
+};
+
+window.deleteBlogPost = async function(id) {
+  if (!isAdmin() || !confirm('Удалить пост?')) return;
+  await deleteDoc(doc(db,'blog',id));
+  showToast('Пост удалён');
+  loadBlog();
+};
+
+// ── Admin Panel ──
+window.loadAdminPanel = async function() {
+  if (!isAdmin()) return;
+  // Stats
+  try {
+    const manhwaSnap = await getCountFromServer(collection(db,'manhwa'));
+    document.getElementById('stat-manhwa').textContent = manhwaSnap.data().count;
+    const usersSnap = await getCountFromServer(collection(db,'users'));
+    document.getElementById('stat-users').textContent = usersSnap.data().count;
+  } catch(e) {}
+  loadAdminUsers();
+  loadAdminComments();
+  loadAdminBlogList();
+};
+
+window.switchAdminTab = function(tab, el) {
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.admin-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('admin-pane-'+tab).classList.add('active');
+  if (tab==='users') loadAdminUsers();
+  if (tab==='comms') loadAdminComments();
+  if (tab==='blog') loadAdminBlogList();
+};
+
+async function loadAdminUsers() {
+  const box = document.getElementById('admin-users-list');
+  box.innerHTML = '<div class="loader">⏳</div>';
+  try {
+    const snap = await getDocs(query(collection(db,'users'), orderBy('createdAt','desc')));
+    if (snap.empty) { box.innerHTML = '<p class="empty-msg">Нет пользователей</p>'; return; }
+    box.innerHTML = '';
+    snap.forEach(d => {
+      const u = d.data();
+      box.innerHTML += `
+        <div class="user-row ${u.banned?'user-banned':''}">
+          <div>
+            <div class="user-row-email">${u.email||d.id}</div>
+            <div class="user-row-role">${u.banned?'BANNED':u.role?.toUpperCase()||'READER'}</div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            ${!u.banned
+              ? `<button class="btn-tiny danger" onclick="banUser('${d.id}',true)">🚫 Бан</button>`
+              : `<button class="btn-tiny" onclick="banUser('${d.id}',false)">✓ Разбан</button>`
+            }
+          </div>
+        </div>`;
+    });
+    document.getElementById('stat-users').textContent = snap.size;
+  } catch(e) { box.innerHTML = `<p class="empty-msg">Ошибка: ${e.message}</p>`; }
+}
+
+window.banUser = async function(uid, ban) {
+  if (!isAdmin()) return;
+  await updateDoc(doc(db,'users',uid), { banned: ban });
+  showToast(ban ? '🚫 Забанен' : '✓ Разбанен');
+  loadAdminUsers();
+};
+
+async function loadAdminComments() {
+  const box = document.getElementById('admin-all-comments');
+  box.innerHTML = '<div class="loader">⏳</div>';
+  try {
+    // Get all manhwa, then all chapters comments — simplified: get recent
+    const manhwaSnap = await getDocs(collection(db,'manhwa'));
+    let allComments = [];
+    for (const mDoc of manhwaSnap.docs) {
+      const chapSnap = await getDocs(collection(db,'manhwa',mDoc.id,'chapters'));
+      for (const chDoc of chapSnap.docs) {
+        const commSnap = await getDocs(query(
+          collection(db,'manhwa',mDoc.id,'chapters',chDoc.id,'comments'),
+          orderBy('createdAt','desc'), limit(10)
+        ));
+        commSnap.forEach(cd => {
+          allComments.push({ ...cd.data(), _id: cd.id, _manhwaId: mDoc.id, _chapterId: chDoc.id,
+            _manhwaTitle: mDoc.data().title, _chTitle: chDoc.data().title });
+        });
+      }
+    }
+    allComments.sort((a,b) => (b.createdAt?.toMillis()||0) - (a.createdAt?.toMillis()||0));
+    document.getElementById('stat-comments').textContent = allComments.length;
+    if (!allComments.length) { box.innerHTML = '<p class="empty-msg">Комментариев нет</p>'; return; }
+    box.innerHTML = allComments.slice(0,30).map(c => {
+      const dateStr = c.createdAt ? new Date(c.createdAt.toMillis()).toLocaleString('ru-RU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+      return `<div class="comment" style="margin-bottom:8px">
+        <div class="comment-header">
+          <span class="comment-name">${c.name||'Аноним'}</span>
+          <span style="font-size:.68rem;color:var(--text3);margin:0 auto 0 8px">${c._manhwaTitle} · ${c._chTitle}</span>
+          <span class="comment-date">${dateStr}</span>
+        </div>
+        <div class="comment-text">${escHtml(c.text)}</div>
+        <div class="comment-actions">
+          <button class="comment-action-btn del" onclick="adminDeleteComment('${c._manhwaId}','${c._chapterId}','${c._id}',this.closest('.comment'))">✕ Удалить</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { box.innerHTML = `<p class="empty-msg">Ошибка: ${e.message}</p>`; }
+}
+
+window.adminDeleteComment = async function(manhwaId, chapterId, commentId, el) {
+  if (!confirm('Удалить?')) return;
+  await deleteDoc(doc(db,'manhwa',manhwaId,'chapters',chapterId,'comments',commentId));
+  if (el) el.remove();
+  showToast('Комментарий удалён');
+};
+
+async function loadAdminBlogList() {
+  const box = document.getElementById('admin-blog-list');
+  box.innerHTML = '<div class="loader" style="padding:16px">⏳</div>';
+  try {
+    const snap = await getDocs(query(collection(db,'blog'), orderBy('createdAt','desc')));
+    if (snap.empty) { box.innerHTML = '<p class="empty-msg">Постов нет</p>'; return; }
+    box.innerHTML = snap.docs.map(d => {
+      const p = d.data();
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:.88rem">${p.title}</div>
+          ${p.tag ? `<div style="font-size:.7rem;color:var(--accent)">${p.tag}</div>` : ''}
+        </div>
+        <button class="btn-tiny" onclick="openEditBlog('${d.id}');openModal('modal-blog')">✏</button>
+        <button class="btn-tiny danger" onclick="deleteBlogPost('${d.id}')">✕</button>
+      </div>`;
+    }).join('');
+  } catch(e) { box.innerHTML = `<p class="empty-msg">Ошибка: ${e.message}</p>`; }
+}
+
+// ── Util ──
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+function escAttr(s) {
+  return String(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/\n/g,' ');
+}
+window.escHtml = escHtml;
+
+// ── Init ──
+window.addEventListener('DOMContentLoaded', () => {
+  loadCatalog();
+  checkPasswordReset();
+});
+</script>
+
+<!-- ══ UI SCRIPTS ══ -->
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  // Update nav tabs
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    t.classList.toggle('active',
+      (id==='page-catalog' && t.textContent==='Каталог') ||
+      (id==='page-blog' && t.textContent==='Блог')
+    );
+  });
+  if (id==='page-blog') window.loadBlog && window.loadBlog();
+}
+
+window.showPageNav = function(id, el) {
+  showPage(id);
+};
+
+function goBackToDetail() { showPage('page-detail'); }
+window.goBackToDetail = goBackToDetail;
+
+// ── Search / Filter ──
+function filterBySearch() {
+  const v1 = (document.getElementById('hero-search-input')?.value||'').toLowerCase();
+  const v2 = (document.getElementById('nav-search')?.value||'').toLowerCase();
+  const v = v1||v2;
+  const filter = typeof currentFilter !== 'undefined' ? currentFilter : 'all';
+  document.querySelectorAll('.manhwa-card').forEach(card => {
+    const textMatch = !v || card.textContent.toLowerCase().includes(v);
+    const tags = card.dataset.tags||'';
+    const tagMatch = filter==='all' || tags.toLowerCase().includes(filter.toLowerCase());
+    card.style.display = textMatch && tagMatch ? '' : 'none';
+  });
+}
+window.filterBySearch = filterBySearch;
+
+// ── Modals ──
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  if (id==='modal-auth') typeof updateAuthModal==='function' && updateAuthModal();
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('open');
+});
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
+});
+window.openModal = openModal;
+window.closeModal = closeModal;
+
+// ── Theme ──
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme', isDark?'light':'dark');
+  document.getElementById('theme-toggle').textContent = isDark?'☀️':'🌙';
+  localStorage.setItem('hb-theme', isDark?'light':'dark');
+}
+(function(){
+  const saved = localStorage.getItem('hb-theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = saved==='light'?'☀️':'🌙';
+  }
+})();
+
+// ── Search toggle ──
+let searchOpen = false;
+function toggleSearch() {
+  searchOpen = !searchOpen;
+  const s = document.getElementById('nav-search');
+  s.classList.toggle('open', searchOpen);
+  if (searchOpen) s.focus();
+}
+
+// ── Prevent nav default for links ──
+document.querySelectorAll('a').forEach(a => {
+  if (!a.href || a.href.includes('t.me')) return;
+});
+</script>
+
+<!-- ══ FIRESTORE RULES INFO (в виде комментария для тебя) ══
+  ПРАВИЛА FIRESTORE — вставь в Firebase Console → Firestore → Rules:
+
+  rules_version = '2';
+  service cloud.firestore {
+    match /databases/{database}/documents {
+      // Только авторизованные могут читать всё
+      match /manhwa/{id} {
+        allow read: if true;
+        allow write: if request.auth != null && request.auth.uid == "REPLACE_WITH_YOUR_ADMIN_UID";
+        match /chapters/{chId} {
+          allow read: if true;
+          allow write: if request.auth != null && request.auth.uid == "REPLACE_WITH_YOUR_ADMIN_UID";
+          match /comments/{cId} {
+            allow read: if true;
+            allow create: if request.auth != null;
+            allow delete: if request.auth != null && (
+              request.auth.uid == resource.data.uid ||
+              request.auth.uid == "REPLACE_WITH_YOUR_ADMIN_UID"
+            );
+          }
+        }
+      }
+      match /blog/{id} {
+        allow read: if true;
+        allow write: if request.auth != null && request.auth.uid == "REPLACE_WITH_YOUR_ADMIN_UID";
+      }
+      match /users/{uid} {
+        allow read: if request.auth != null && request.auth.uid == "REPLACE_WITH_YOUR_ADMIN_UID";
+        allow create: if request.auth != null && request.auth.uid == uid;
+        allow update: if request.auth != null && (
+          request.auth.uid == uid ||
+          request.auth.uid == "REPLACE_WITH_YOUR_ADMIN_UID"
+        );
+      }
+      match /progress/{id} {
+        allow read, write: if request.auth != null;
+      }
+    }
+  }
+
+  КАК НАЗНАЧИТЬ СЕБЯ АДМИНОМ:
+  1. Зарегистрируйся на сайте
+  2. Firebase Console → Authentication → Users → скопируй свой User UID
+  3. В файле замени "REPLACE_WITH_YOUR_ADMIN_UID" на свой UID (2 места: const ADMIN_UID и в правилах)
+  4. Готово — перезагрузи страницу
+══ -->
+</body>
+</html>
