@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>HornyBible — Переводы манхв</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ══ ПЕРЕМЕННЫЕ (HORNYBIBLE) ══ */
+:root {
+  --ink:       #ede8ff;
+  --parchment: #0d0b12;
+  --parchment-dark: #13101c;
+  --red:       #e8365d;
+  --gold:      #ffb800;
+  --gold-light:#ffd04d;
+  --muted:     #8b7fb8;
+  --divider:   rgba(232,54,93,0.22);
+  --success:   #3dbf7a;
+  --card-bg:   rgba(28,24,40,0.85);
+  --form-bg:   rgba(19,16,28,0.9);
+  --modal-bg:  #13101c;
+  --aside-bg:  rgba(28,24,40,0.7);
+  --saved-card-bg: rgba(19,16,28,0.8);
+  --comment-admin-bg: rgba(255,184,0,0.06);
+  --accent-glow: rgba(232,54,93,0.28);
+  --surface:   #1c1828;
+  --border:    #2e2845;
+}
+/* Светлая тема */
+body.light {
+  --ink:        #1a0f1e;
+  --parchment:  #fdf6ff;
+  --parchment-dark: #f0e8fa;
+  --red:        #c01f4a;
+  --gold:       #b8860b;
+  --gold-light: #d4a532;
+  --muted:      #7a5c8a;
+  --divider:    rgba(192,31,74,0.22);
+  --success:    #2a7a4a;
+  --card-bg:    rgba(255,255,255,0.5);
+  --form-bg:    rgba(253,246,255,0.9);
+  --modal-bg:   #fdf6ff;
+  --aside-bg:   rgba(255,255,255,0.4);
+  --saved-card-bg: rgba(253,246,255,0.7);
+  --comment-admin-bg: rgba(184,134,11,0.07);
+  --surface:    #f4ecfa;
+  --border:     rgba(192,31,74,0.18);
+}
+/* Сепия */
+body.sepia {
+  --ink:        #2a1020;
+  --parchment:  #f5ead6;
+  --parchment-dark: #e8d5b0;
+  --red:        #a01e3e;
+  --gold:       #b8860b;
+  --muted:      #7a5c3a;
+  --divider:    rgba(160,30,62,0.22);
+  --success:    #3a6b2a;
+  --card-bg:    rgba(210,180,140,0.3);
+  --form-bg:    rgba(240,230,208,0.9);
+  --modal-bg:   #f5ead6;
+  --aside-bg:   rgba(210,180,140,0.25);
+  --saved-card-bg: rgba(240,230,208,0.6);
+  --surface:    #f0e0c8;
+  --border:     rgba(160,30,62,0.18);
+}
+/* Тёмно-фиолетовая (дефолт для манхвы) */
+body.violet {
+  --ink:        #ede8ff;
+  --parchment:  #0d0b12;
+  --parchment-dark: #13101c;
+  --red:        #e8365d;
+  --gold:       #ffb800;
+  --muted:      #8b7fb8;
+  --divider:    rgba(232,54,93,0.22);
+  --surface:    #1c1828;
+  --border:     #2e2845;
+}
+/* Ночная синяя */
+body.night {
+  --ink:        #c8d8e8;
+  --parchment:  #0f1520;
+  --parchment-dark: #172030;
+  --red:        #5b8dd9;
+  --gold:       #7ab8d4;
+  --muted:      #7090a8;
+  --divider:    rgba(91,141,217,0.22);
+  --surface:    #152030;
+  --border:     rgba(91,141,217,0.2);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background-color: var(--parchment);
+  color: var(--ink);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.8;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.6;
+}
+
+/* ══ HEADER ══ */
+header {
+  position: relative; z-index: 10;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 50px 40px 36px;
+  border-bottom: 1px solid var(--divider);
+  background: linear-gradient(to bottom, var(--parchment-dark), var(--parchment));
+}
+.brand-h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 4.5rem; color: var(--red);
+  letter-spacing: 6px;
+  text-shadow: 0 0 30px var(--accent-glow), 0 0 60px var(--accent-glow);
+  margin: 0; animation: fadeDown 0.8s ease both;
+}
+.brand-sub {
+  font-size: 0.78rem; color: var(--muted);
+  letter-spacing: 0.3em; text-transform: uppercase;
+  margin-top: 8px; animation: fadeDown 0.8s 0.15s ease both;
+}
+.ornament { color: var(--red); letter-spacing: 0.5em; margin-top: 20px; font-size: 0.9rem; opacity: 0.5; }
+
+/* ══ NAV ══ */
+nav {
+  position: relative; z-index: 10;
+  display: flex; justify-content: space-between; align-items: stretch;
+  border-bottom: 1px solid var(--divider);
+  animation: fadeDown 0.8s 0.2s ease both;
+}
+.nav-main { display: flex; }
+nav a, .nav-link {
+  display: flex; align-items: center;
+  text-decoration: none; color: var(--muted);
+  font-family: 'EB Garamond', serif;
+  font-size: 0.85rem; letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 16px 24px;
+  transition: color 0.3s, background 0.3s;
+  border-right: 1px solid var(--divider);
+  cursor: pointer; white-space: nowrap;
+}
+.nav-main a:first-child { border-left: 1px solid var(--divider); }
+nav a:hover, .nav-link:hover { color: var(--red); background: rgba(232,54,93,0.06); }
+nav a.active, .nav-link.active { color: var(--red); }
+.nav-right { display: flex; align-items: center; gap: 10px; padding: 0 18px; }
+
+/* ══ BURGER ══ */
+.nav-mobile-top { display: none; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--divider); }
+.burger { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 4px; }
+.burger span { display: block; width: 22px; height: 2px; background: var(--muted); transition: all 0.3s; }
+.burger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.burger.open span:nth-child(2) { opacity: 0; }
+.burger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+/* ══ AUTH BUTTONS ══ */
+.btn-auth {
+  font-family: 'EB Garamond', serif; font-size: 0.75rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 6px 16px; border: 1px solid var(--divider);
+  background: transparent; color: var(--muted); cursor: pointer; transition: all 0.3s; white-space: nowrap;
+}
+.btn-auth:hover { color: var(--red); border-color: var(--red); background: rgba(232,54,93,0.05); }
+.btn-auth.primary { background: var(--red); color: #fff; border-color: var(--red); }
+.btn-auth.primary:hover { background: #c01f4a; }
+.btn-auth.gold-btn { background: var(--gold); border-color: var(--gold); color: #0d0b12; }
+.btn-auth.gold-btn:hover { background: #e0a200; }
+
+.user-chip { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 5px 12px 5px 5px; border: 1px solid var(--divider); transition: border-color 0.3s; }
+.user-chip:hover { border-color: var(--red); }
+.user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.8rem; font-weight: bold; overflow: hidden; flex-shrink: 0; }
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-chip-name { font-size: 0.8rem; color: var(--ink); }
+
+/* ══ THEME DROPDOWN ══ */
+.theme-toggle { background: none; border: 1px solid var(--divider); color: var(--muted); font-family: 'EB Garamond', serif; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 12px; cursor: pointer; white-space: nowrap; transition: all 0.3s; }
+.theme-toggle:hover { color: var(--red); border-color: var(--red); }
+.theme-dropdown { position: absolute; top: calc(100% + 4px); right: 0; background: var(--modal-bg); border: 1px solid var(--divider); min-width: 160px; z-index: 500; display: none; flex-direction: column; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.theme-dropdown.open { display: flex; }
+.theme-option { background: none; border: none; color: var(--ink); font-family: 'EB Garamond', serif; font-size: 0.9rem; padding: 10px 16px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; transition: background 0.2s; }
+.theme-option:hover, .theme-option.active { background: rgba(232,54,93,0.1); color: var(--red); }
+.theme-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--divider); flex-shrink: 0; }
+
+/* ══ PAGES ══ */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ══ SECTIONS ══ */
+.section { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 60px 40px; }
+.section + .section { border-top: 1px solid var(--divider); }
+
+.section-tag {
+  font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-tag::after { content: ''; flex: 1; height: 1px; background: var(--gold); opacity: 0.3; }
+
+h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 400; color: var(--red); margin-bottom: 24px; line-height: 1.2; }
+h2 em { font-style: italic; color: var(--ink); }
+p { color: var(--ink); margin-bottom: 16px; font-size: 1.05rem; }
+
+/* ══ HERO ══ */
+.hero { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.hero-text { animation: fadeLeft 0.9s 0.3s ease both; }
+.hero-visual { animation: fadeRight 0.9s 0.3s ease both; text-align: center; }
+.hero-quote { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; color: var(--red); line-height: 1.4; margin-bottom: 24px; padding-left: 20px; border-left: 3px solid var(--gold); }
+.manhwa-chars { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; line-height: 1; color: var(--red); opacity: 0.12; text-align: center; letter-spacing: 0.1em; user-select: none; }
+
+/* ══ WORKS GRID — MANHWA CARDS ══ */
+.works-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 32px; }
+
+.work-card {
+  background: var(--card-bg); border: 1px solid var(--divider);
+  position: relative; transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  cursor: pointer; overflow: hidden; border-radius: 4px;
+}
+.work-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(232,54,93,0.18); border-color: var(--red); }
+/* обложка */
+.work-cover { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+.work-cover-placeholder { width: 100%; aspect-ratio: 2/3; background: linear-gradient(135deg, var(--surface) 0%, var(--parchment-dark) 100%); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--red); opacity: 0.5; letter-spacing: 2px; }
+.work-info { padding: 14px; }
+.work-badge { display: inline-block; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 2px 8px; border: 1px solid var(--red); color: var(--red); margin-bottom: 6px; }
+.work-genre { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+.work-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--red); margin-bottom: 4px; line-height: 1.3; }
+.work-author { font-size: 0.85rem; color: var(--muted); font-style: italic; margin-bottom: 4px; }
+.work-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin: 0; }
+.card-edit-btn { position: absolute; top: 8px; right: 8px; background: rgba(13,11,18,0.75); border: 1px solid var(--gold); font-size: 0.8rem; color: var(--gold); cursor: pointer; opacity: 0; transition: opacity 0.2s; z-index: 2; padding: 3px 8px; border-radius: 3px; }
+.work-card:hover .card-edit-btn { opacity: 1; }
+.badge-new { display: inline-block; background: var(--red); color: #fff; font-size: 0.55rem; padding: 1px 5px; letter-spacing: 0.12em; text-transform: uppercase; margin-left: 5px; vertical-align: middle; border-radius: 2px; }
+
+/* Прогресс */
+.prog-bar { height: 3px; background: var(--divider); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+.prog-fill { height: 100%; background: linear-gradient(to right, var(--red), var(--gold)); border-radius: 2px; transition: width 0.4s; }
+.prog-label { font-size: 0.7rem; color: var(--muted); margin-top: 3px; }
+
+/* ══ MANHWA READER (images) ══ */
+.manhwa-reader { max-width: 760px; margin: 0 auto; }
+.manhwa-page-img { width: 100%; display: block; margin-bottom: 2px; }
+.chapter-content { font-size: 1.05rem; line-height: 2; }
+.chapter-content p { margin-bottom: 20px; }
+.chapter-nav-bar { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--divider); }
+
+/* READER TOOLBAR */
+.reader-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 20px; padding: 12px 16px; background: var(--card-bg); border: 1px solid var(--divider); border-radius: 4px; }
+.rtb-label { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+.rtb-group { display: flex; gap: 6px; }
+.rtb-btn { background: none; border: 1px solid var(--divider); color: var(--muted); font-family: 'EB Garamond', serif; font-size: 0.82rem; padding: 4px 10px; cursor: pointer; transition: all 0.2s; }
+.rtb-btn:hover, .rtb-btn.on { background: var(--red); border-color: var(--red); color: #fff; }
+.rtb-val { font-size: 0.82rem; color: var(--ink); min-width: 36px; text-align: center; }
+
+/* ══ CHAPTERS LIST ══ */
+.chapters-list { list-style: none; }
+.chapters-list li { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--divider); transition: padding-left 0.2s; }
+.chapters-list li:hover { padding-left: 6px; }
+.chapter-link { cursor: pointer; color: var(--ink); font-size: 1rem; flex: 1; transition: color 0.2s; }
+.chapter-link:hover { color: var(--red); }
+.chapter-date { font-size: 0.75rem; color: var(--muted); margin-left: 12px; flex-shrink: 0; }
+
+/* ══ BLOG ══ */
+.blog-posts { margin-top: 32px; }
+.blog-post { display: grid; grid-template-columns: 80px 1fr; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--divider); align-items: start; position: relative; }
+.blog-post:first-child { border-top: 1px solid var(--divider); }
+.blog-date { text-align: center; font-family: 'Playfair Display', serif; }
+.blog-date .day { font-size: 2rem; font-weight: 700; color: var(--red); line-height: 1; }
+.blog-date .month { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+.blog-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--red); margin-bottom: 8px; line-height: 1.3; }
+.blog-excerpt { font-size: 0.95rem; color: var(--muted); margin: 0; line-height: 1.65; }
+.blog-post-actions { position: absolute; top: 28px; right: 0; display: flex; gap: 6px; opacity: 0; transition: opacity 0.2s; }
+.blog-post:hover .blog-post-actions { opacity: 1; }
+
+/* ══ ABOUT ══ */
+.about-grid { display: grid; grid-template-columns: 1fr 260px; gap: 48px; align-items: start; }
+.about-aside { background: var(--aside-bg); border: 1px solid var(--divider); padding: 24px; }
+.aside-title { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+.tag-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { font-size: 0.78rem; padding: 4px 12px; border: 1px solid var(--divider); color: var(--muted); letter-spacing: 0.05em; }
+
+/* ══ BTNS ══ */
+.btn {
+  display: inline-block; margin-top: 24px; padding: 12px 30px;
+  border: 1px solid var(--red); color: var(--red);
+  text-decoration: none; font-family: 'EB Garamond', serif;
+  font-size: 0.88rem; letter-spacing: 0.16em; text-transform: uppercase;
+  transition: background 0.3s, color 0.3s; position: relative; cursor: pointer; background: transparent;
+}
+.btn::after { content: ''; position: absolute; bottom: -4px; right: -4px; width: 100%; height: 100%; border: 1px solid var(--gold); opacity: 0.3; transition: opacity 0.3s; pointer-events: none; }
+.btn:hover { background: var(--red); color: #fff; }
+.btn:hover::after { opacity: 0.6; }
+
+.btn-plain { display: inline-block; padding: 9px 22px; border: 1px solid var(--red); color: var(--red); font-family: 'EB Garamond', serif; font-size: 0.82rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; background: transparent; transition: all 0.3s; text-decoration: none; }
+.btn-plain:hover { background: var(--red); color: #fff; }
+.btn-plain.filled { background: var(--red); color: #fff; }
+.btn-plain.filled:hover { background: #c01f4a; }
+.btn-plain.gold { background: var(--gold); border-color: var(--gold); color: #0d0b12; }
+.btn-plain.gold:hover { background: #e0a200; }
+.btn-sm { font-family: 'EB Garamond', serif; font-size: 0.72rem; padding: 3px 10px; border: 1px solid var(--divider); background: none; color: var(--muted); cursor: pointer; transition: all 0.2s; letter-spacing: 0.08em; text-transform: uppercase; }
+.btn-sm:hover { border-color: var(--red); color: var(--red); }
+.btn-sm.danger:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+/* ══ SAVED ══ */
+.saved-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-top: 24px; }
+.saved-card { background: var(--saved-card-bg); border: 1px solid var(--divider); padding: 18px; position: relative; }
+.saved-remove { position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.8rem; transition: color 0.2s; }
+.saved-remove:hover { color: var(--red); }
+
+/* ══ LOCKED NOTICE ══ */
+.locked-notice { background: var(--card-bg); border: 1px solid var(--divider); padding: 24px; font-size: 0.95rem; color: var(--muted); text-align: center; border-radius: 4px; }
+
+/* ══ FORUM ══ */
+.forum-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; gap: 16px; }
+.forum-thread { background: var(--card-bg); border: 1px solid var(--divider); padding: 18px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+.forum-thread:hover { border-color: var(--red); background: rgba(232,54,93,0.04); }
+.forum-thread-head { display: flex; align-items: center; gap: 14px; }
+.forum-thread-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.95rem; flex-shrink: 0; overflow: hidden; }
+.forum-thread-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.forum-thread-meta { flex: 1; }
+.forum-thread-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--ink); margin-bottom: 4px; }
+.forum-thread-sub { font-size: 0.78rem; color: var(--muted); display: flex; gap: 12px; }
+.forum-thread-count { font-size: 0.82rem; color: var(--muted); flex-shrink: 0; }
+.forum-post { display: flex; gap: 14px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--divider); }
+.forum-post:last-child { border-bottom: none; }
+.forum-post-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.9rem; flex-shrink: 0; overflow: hidden; }
+.forum-post-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.forum-post-body { flex: 1; }
+.forum-post-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.forum-post-author { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--red); }
+.forum-post-admin-badge { font-size: 0.6rem; padding: 2px 6px; border: 1px solid var(--gold); color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
+.forum-post-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.8rem; margin-left: auto; transition: color 0.2s; }
+.forum-post-del:hover { color: var(--red); }
+.forum-post-text { font-size: 0.98rem; color: var(--ink); line-height: 1.7; white-space: pre-wrap; }
+.forum-post-media { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
+.forum-media-img { max-width: 240px; max-height: 240px; object-fit: cover; border: 1px solid var(--divider); cursor: zoom-in; }
+.forum-attach-btn { display: inline-flex; align-items: center; gap: 6px; font-family: 'EB Garamond', serif; font-size: 0.82rem; color: var(--muted); padding: 6px 12px; border: 1px solid var(--divider); cursor: pointer; transition: all 0.2s; }
+.forum-attach-btn:hover { color: var(--red); border-color: var(--red); }
+.forum-attach-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.forum-attach-preview img { width: 60px; height: 60px; object-fit: cover; border: 1px solid var(--divider); }
+.forum-attach-preview .fa-item { font-size: 0.78rem; color: var(--muted); padding: 4px 8px; border: 1px solid var(--divider); }
+.forum-compose-actions { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.forum-upload-progress { font-size: 0.78rem; color: var(--muted); }
+
+/* ══ COMMENTS ══ */
+.comments-wrap { border-top: 1px solid var(--divider); margin-top: 40px; padding-top: 30px; }
+.comment { display: flex; gap: 14px; margin-bottom: 22px; padding-bottom: 22px; border-bottom: 1px solid rgba(232,54,93,0.08); }
+.comment:last-child { border-bottom: none; }
+.comment-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.95rem; flex-shrink: 0; overflow: hidden; }
+.comment-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.comment-body { flex: 1; }
+.comment-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; flex-wrap: wrap; }
+.comment-author { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--red); }
+.comment-author-admin { color: var(--gold) !important; }
+.comment-admin-badge { display: inline-block; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 2px 7px; border: 1px solid var(--gold); color: var(--gold); vertical-align: middle; margin-left: 6px; }
+.comment-time { font-size: 0.72rem; color: var(--muted); }
+.comment-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.78rem; margin-left: auto; transition: color 0.2s; }
+.comment-del:hover { color: var(--red); }
+.comment-text { font-size: 0.98rem; color: var(--ink); line-height: 1.7; white-space: pre-wrap; }
+.comment-reply-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.78rem; font-family: 'EB Garamond', serif; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 6px; padding: 0; transition: color 0.2s; }
+.comment-reply-btn:hover { color: var(--red); }
+.comment-reply-quote { background: var(--card-bg); border-left: 2px solid var(--red); padding: 8px 12px; margin-bottom: 8px; font-size: 0.88rem; color: var(--muted); }
+.rq-author { font-size: 0.75rem; color: var(--red); margin-bottom: 2px; }
+.reply-form { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); padding: 8px 12px; margin-bottom: 10px; border: 1px solid var(--divider); }
+.reply-cancel { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.82rem; transition: color 0.2s; }
+.reply-cancel:hover { color: var(--red); }
+
+/* ══ FORMS ══ */
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+.form-group input, .form-group textarea, .form-group select { width: 100%; background: var(--form-bg); border: 1px solid var(--divider); padding: 10px 13px; font-family: 'EB Garamond', serif; font-size: 1rem; color: var(--ink); outline: none; transition: border-color 0.3s; resize: vertical; }
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--red); }
+.form-group textarea { min-height: 120px; }
+.remember-row { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.remember-row input[type="checkbox"] { width: auto; accent-color: var(--red); cursor: pointer; }
+.remember-row label { font-size: 0.9rem; color: var(--muted); cursor: pointer; }
+.switch-link { text-align: center; margin-top: 14px; font-size: 0.9rem; color: var(--muted); }
+.switch-link a { color: var(--red); cursor: pointer; text-decoration: underline; }
+.msg { padding: 9px 14px; margin-bottom: 14px; font-size: 0.9rem; border-left: 3px solid; }
+.msg.error { border-color: var(--red); background: rgba(232,54,93,0.08); color: var(--red); }
+.msg.success { border-color: var(--success); background: rgba(61,191,122,0.07); color: var(--success); }
+
+/* ══ PROFILE ══ */
+.profile-layout { display: grid; grid-template-columns: 180px 1fr; gap: 40px; align-items: start; }
+.avatar-upload { text-align: center; }
+.avatar-big { width: 130px; height: 130px; border-radius: 50%; border: 2px solid var(--divider); margin: 0 auto 10px; overflow: hidden; background: var(--red); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2.8rem; font-family: 'Playfair Display', serif; }
+.avatar-big img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-upload input[type="file"] { display: none; }
+.avatar-label { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); cursor: pointer; text-decoration: underline; transition: color 0.2s; }
+.avatar-label:hover { color: var(--red); }
+
+/* ══ ADMIN ══ */
+.admin-tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--divider); margin-bottom: 32px; }
+.admin-tab { font-family: 'EB Garamond', serif; font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 20px; border-right: 1px solid var(--divider); cursor: pointer; color: var(--muted); transition: all 0.2s; user-select: none; }
+.admin-tab:first-child { border-left: 1px solid var(--divider); }
+.admin-tab:hover { color: var(--red); background: rgba(232,54,93,0.05); }
+.admin-tab.active { color: var(--red); border-bottom: 2px solid var(--red); }
+.admin-pane { display: none; }
+.admin-pane.active { display: block; }
+.admin-notif-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--red); margin-left: 5px; vertical-align: middle; }
+.books-admin-list li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--divider); }
+.ch-row { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--divider); }
+.ch-row-title { flex: 1; font-size: 0.95rem; color: var(--ink); }
+.notif-source { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+.comment-admin { display: flex; gap: 12px; padding: 12px; background: var(--comment-admin-bg); border: 1px solid var(--divider); margin-bottom: 8px; border-radius: 3px; }
+
+/* Cover upload preview */
+.cover-preview-wrap { margin-top: 10px; }
+.cover-preview-img { max-width: 120px; max-height: 180px; object-fit: cover; border: 1px solid var(--divider); display: block; margin-bottom: 6px; }
+
+/* ══ MODAL ══ */
+.modal-overlay { position: fixed; inset: 0; background: rgba(13,11,18,0.82); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 20px; }
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal-box { background: var(--modal-bg); border: 1px solid var(--divider); max-width: 600px; width: 100%; padding: 40px; position: relative; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s ease; }
+.modal-box.wide { max-width: 820px; }
+@keyframes modalIn { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 1.2rem; color: var(--muted); cursor: pointer; transition: color 0.2s; }
+.modal-close:hover { color: var(--red); }
+.modal-badge { display: inline-block; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 3px 10px; border: 1px solid var(--red); color: var(--red); margin-bottom: 12px; }
+.modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--red); margin-bottom: 6px; line-height: 1.25; }
+.modal-author { font-style: italic; color: var(--muted); font-size: 1rem; margin-bottom: 8px; }
+.modal-meta { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 14px; }
+.modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.modal-tag { font-size: 0.7rem; padding: 3px 10px; border: 1px solid var(--divider); color: var(--muted); }
+.modal-desc { font-size: 0.98rem; color: var(--ink); line-height: 1.75; margin-bottom: 16px; }
+.modal-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 0; }
+
+/* ══ FOOTER ══ */
+footer { position: relative; z-index: 1; border-top: 1px solid var(--divider); padding: 36px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+footer p { font-size: 0.82rem; color: var(--muted); margin: 0; }
+.footer-links { display: flex; gap: 22px; }
+.footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; letter-spacing: 0.1em; transition: color 0.2s; cursor: pointer; }
+.footer-links a:hover { color: var(--red); }
+
+/* ══ TG BANNER ══ */
+.tg-banner { background: linear-gradient(135deg, var(--parchment-dark), var(--surface)); border: 1px solid var(--divider); padding: 40px; text-align: center; margin: 0 40px 0; }
+
+/* ══ LOADING SCREEN ══ */
+#loading-screen {
+  position: fixed; inset: 0; background: var(--parchment); z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+}
+.loading-logo { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--red); letter-spacing: 6px; text-shadow: 0 0 30px var(--accent-glow); }
+.loading-bar { width: 200px; height: 2px; background: var(--divider); overflow: hidden; }
+.loading-bar-fill { width: 0%; height: 100%; background: linear-gradient(to right, var(--red), var(--gold)); animation: loadFill 1.4s ease forwards; }
+@keyframes loadFill { to { width: 100%; } }
+.loading-text { font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); animation: blink 1.2s ease infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.4} }
+
+/* ══ SCROLL TO TOP ══ */
+#btn-top { position: fixed; bottom: 30px; right: 30px; z-index: 100; background: var(--red); color: #fff; border: none; width: 44px; height: 44px; display: none; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; box-shadow: 0 4px 20px var(--accent-glow); transition: all 0.3s; border-radius: 50%; }
+#btn-top.show { display: flex; }
+#btn-top:hover { background: #c01f4a; transform: translateY(-2px); }
+
+/* ══ ANIMATIONS ══ */
+@keyframes fadeDown { from { opacity:0; transform:translateY(-16px) } to { opacity:1; transform:translateY(0) } }
+@keyframes fadeLeft { from { opacity:0; transform:translateX(-20px) } to { opacity:1; transform:translateX(0) } }
+@keyframes fadeRight { from { opacity:0; transform:translateX(20px) } to { opacity:1; transform:translateX(0) } }
+.fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-in.visible { opacity: 1; transform: none; }
+
+/* ══ GLOBAL ERROR ══ */
+#global-err { display: none; position: fixed; bottom: 80px; right: 24px; background: var(--red); color: #fff; padding: 12px 18px; font-size: 0.88rem; z-index: 9000; border-radius: 4px; max-width: 280px; }
+
+/* ══ MOBILE ══ */
+@media (max-width: 768px) {
+  .brand-h1 { font-size: 3rem; }
+  .nav-mobile-top { display: flex; }
+  .nav-main { display: none; flex-direction: column; width: 100%; background: var(--parchment-dark); border-bottom: 1px solid var(--divider); }
+  .nav-main.open { display: flex; }
+  .nav-main a { border-right: none; border-bottom: 1px solid var(--divider); padding: 14px 20px; }
+  .nav-right { display: none; }
+  header { padding: 30px 20px 24px; }
+  .hero { grid-template-columns: 1fr; gap: 20px; }
+  .hero-visual { display: none; }
+  .section { padding: 40px 20px; }
+  .works-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .about-grid { grid-template-columns: 1fr; }
+  .profile-layout { grid-template-columns: 1fr; }
+  .admin-tabs { overflow-x: auto; }
+  footer { flex-direction: column; text-align: center; padding: 24px 20px; }
+  .tg-banner { margin: 0 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="loading-logo">HORNYBIBLE</div>
+  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  <div class="loading-text">Загрузка переводов...</div>
+</div>
+
+<div id="global-err">⚠ Произошла ошибка. Обновите страницу.</div>
+<button id="btn-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- HEADER -->
+<header>
+  <h1 class="brand-h1">HORNYBIBLE</h1>
+  <p class="brand-sub">Любительские переводы манхв</p>
+  <div class="ornament">♦ &nbsp; ♦ &nbsp; ♦</div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-mobile-top" style="display:none">
+    <button class="burger" id="burger-btn" onclick="toggleBurger()" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+    <div id="nav-auth-mobile" style="display:flex;gap:8px;align-items:center;"></div>
+  </div>
+  <div class="nav-main" id="nav-main-links">
+    <a onclick="showSection('home');closeBurger()" id="nav-home" class="active">Главная</a>
+    <a onclick="showSection('works');closeBurger()" id="nav-works">Манхвы</a>
+    <a onclick="showSection('blog');closeBurger()" id="nav-blog">Блог</a>
+    <a onclick="showSection('about');closeBurger()" id="nav-about">О проекте</a>
+    <a onclick="showSection('saved');closeBurger()" id="nav-saved">Сохранённое</a>
+    <a onclick="showSection('forum');closeBurger()" id="nav-forum">Форум</a>
+  </div>
+  <div class="nav-right" id="nav-auth-area"></div>
+</nav>
+
+<!-- ══ MAIN PAGE ══ -->
+<div class="page active" id="page-main">
+
+  <!-- HERO -->
+  <section class="section" id="sec-home">
+    <div class="hero">
+      <div class="hero-text fade-in">
+        <div class="section-tag">О сайте</div>
+        <h2>Манхвы<br><em>без купюр и спешки</em></h2>
+        <p class="hero-quote" id="home-quote">«Хорошая манхва — это когда жалко листать быстро»</p>
+        <p id="home-desc">Здесь публикуются любительские переводы корейских манхв. Всё делается с душой, без дедлайнов и совершенно бесплатно.</p>
+        <div id="home-admin-bar" style="display:none;margin-top:16px">
+          <button class="btn-plain" onclick="openEditText('home')">✎ Редактировать текст главной</button>
+        </div>
+      </div>
+      <div class="hero-visual fade-in">
+        <div class="manhwa-chars">♦<br>漫<br>画<br>♦</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKS -->
+  <section class="section" id="sec-works">
+    <div class="fade-in">
+      <div class="section-tag">Каталог</div>
+      <h2>Манхвы</h2>
+      <p>Нажми на обложку, чтобы узнать подробнее и начать читать.</p>
+      <div class="works-grid" id="works-grid"></div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section class="section" id="sec-blog">
+    <div class="fade-in">
+      <div class="section-tag">Записки переводчика</div>
+      <h2>Блог</h2>
+      <p>Мысли о переводе, корейских манхвах, трудностях и находках.</p>
+      <div class="blog-posts" id="blog-posts-list"></div>
+      <div id="blog-admin-bar" style="display:none;margin-top:20px">
+        <button class="btn-plain" onclick="openAddBlogPost()">+ Новая запись</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" id="sec-about">
+    <div class="fade-in">
+      <div class="section-tag">О проекте</div>
+      <h2>Кто за этим стоит</h2>
+      <div class="about-grid">
+        <div>
+          <p id="about-p1">Привет! Я — автор проекта HornyBible. Переводю корейские манхвы просто потому, что люблю их и хочу делиться ими с русскоязычными читателями.</p>
+          <p id="about-p2">Все переводы бесплатны. Если хочешь поддержать — подпишись на Telegram-канал.</p>
+          <div id="about-admin-bar" style="display:none;margin-top:14px">
+            <button class="btn-plain" onclick="openEditText('about')">✎ Редактировать</button>
+          </div>
+        </div>
+        <div class="about-aside">
+          <div class="aside-title">Жанры</div>
+          <div class="tag-list" style="margin-bottom:20px;">
+            <span class="tag">Романтика</span><span class="tag">Фэнтези</span>
+            <span class="tag">Экшн</span><span class="tag">Драма</span>
+            <span class="tag">Комедия</span><span class="tag">Исэкай</span>
+          </div>
+          <div class="aside-title" style="margin-top:20px;">Ссылки</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="https://t.me/" class="btn" target="_blank" style="margin:0;text-align:center;display:block;">Telegram-канал</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAVED -->
+  <section class="section" id="sec-saved">
+    <div class="fade-in">
+      <div class="section-tag">Личная библиотека</div>
+      <h2>Сохранённое</h2>
+      <div id="saved-content"></div>
+    </div>
+  </section>
+
+  <!-- FORUM -->
+  <section class="section" id="sec-forum">
+    <div class="fade-in">
+      <div class="forum-header">
+        <div>
+          <div class="section-tag">Сообщество</div>
+          <h2 style="margin-bottom:0">Форум</h2>
+          <p style="color:var(--muted);font-size:0.95rem;margin-top:8px;margin-bottom:0">Обсуждайте манхвы, делитесь впечатлениями.</p>
+        </div>
+        <button class="btn-plain filled" id="forum-new-btn" onclick="openNewThreadModal()" style="display:none">+ Новая тема</button>
+      </div>
+      <div id="forum-threads-list"><p style="color:var(--muted)">Загрузка...</p></div>
+    </div>
+  </section>
+
+  <!-- FORUM: новая тема modal -->
+  <div class="modal-overlay" id="forum-thread-modal" onclick="if(event.target===this)closeNewThreadModal()">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeNewThreadModal()">✕</button>
+      <div class="section-tag">Новая тема</div>
+      <div class="form-group" style="margin-top:16px"><label>Название темы</label><input type="text" id="forum-thread-title-inp" placeholder="О чём хотите поговорить?"></div>
+      <div class="form-group"><label>Первое сообщение</label><textarea id="forum-thread-text-inp" style="min-height:100px" placeholder="Напишите что-нибудь..."></textarea></div>
+      <div id="forum-new-attach-preview" class="forum-attach-preview"></div>
+      <div class="forum-compose-actions">
+        <label class="forum-attach-btn" style="cursor:pointer">📎 Прикрепить
+          <input type="file" id="forum-new-file-inp" multiple accept="image/*,.pdf" style="display:none" onchange="forumPreviewAttach('new',event)">
+        </label>
+        <span id="forum-new-upload-progress" class="forum-upload-progress"></span>
+      </div>
+      <div id="forum-new-thread-msg" style="margin-top:12px"></div>
+      <button class="btn-plain filled" onclick="submitNewThread()" style="margin-top:16px;width:100%">Создать тему</button>
+    </div>
+  </div>
+
+  <!-- TG BANNER -->
+  <div class="tg-banner">
+    <div style="font-size:0.72rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Telegram-канал</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--red);margin-bottom:12px;">Читай главы первым</div>
+    <p style="font-size:0.95rem;color:var(--muted);margin-bottom:16px;">Свежие главы, обновления и новости переводов — всё в одном месте.</p>
+    <a href="https://t.me/" class="btn" target="_blank">Подписаться на канал →</a>
+  </div>
+
+  <footer>
+    <div style="width:100%;text-align:center;margin-bottom:12px;font-size:0.75rem;color:var(--muted);opacity:0.7;letter-spacing:0.05em;">
+      Все переводы являются любительскими. Авторские права принадлежат их владельцам.
+    </div>
+    <p>© 2026 HornyBible</p>
+    <div class="footer-links">
+      <a href="https://t.me/" target="_blank">Telegram</a>
+      <a onclick="showSection('blog')">Блог</a>
+      <a onclick="showSection('about')">О проекте</a>
+      <a onclick="showSection('forum')">Форум</a>
+      <a onclick="showSection('saved')">Сохранённое</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ══ PAGE: FORUM THREAD ══ -->
+<div class="page" id="page-forum-thread">
+  <div class="section" style="max-width:760px">
+    <div id="forum-thread-header"></div>
+    <div id="forum-thread-posts"></div>
+    <div id="forum-thread-compose"></div>
+  </div>
+</div>
+
+<!-- ══ PAGE: BOOK DETAIL ══ -->
+<div class="page" id="page-book">
+  <div class="section">
+    <div id="book-detail-header"></div>
+    <div class="section-tag" style="margin-top:32px">Главы</div>
+    <ul class="chapters-list" id="chapters-list"></ul>
+  </div>
+</div>
+
+<!-- ══ PAGE: CHAPTER READER ══ -->
+<div class="page" id="page-chapter">
+  <div class="section">
+    <div id="chapter-header"></div>
+    <div class="chapter-content" id="chapter-content" style="margin-top:28px"></div>
+    <div class="chapter-nav-bar" id="chapter-nav"></div>
+    <div class="comments-wrap" id="chapter-comments"></div>
+  </div>
+</div>
+
+<!-- ══ PAGE: PROFILE ══ -->
+<div class="page" id="page-profile">
+  <div class="section">
+    <div class="section-tag">Аккаунт</div>
+    <h2>Мой профиль</h2>
+    <div class="profile-layout">
+      <div class="avatar-upload">
+        <div class="avatar-big" id="profile-avatar-big"></div>
+        <label class="avatar-label" for="avatar-input">Изменить фото</label>
+        <input type="file" id="avatar-input" accept="image/*" onchange="handleAvatarUpload(event)">
+      </div>
+      <div>
+        <div id="profile-msg"></div>
+        <div class="form-group"><label>Никнейм</label><input type="text" id="profile-nickname"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="profile-email" readonly style="opacity:0.6;cursor:default"></div>
+        <div class="form-group"><label>Новый пароль (оставьте пустым, чтобы не менять)</label><input type="password" id="profile-password" placeholder="••••••••"></div>
+        <div style="display:flex;gap:12px;margin-top:6px;flex-wrap:wrap">
+          <button class="btn-plain filled" onclick="saveProfile()">Сохранить</button>
+          <button class="btn-plain" onclick="logout()">Выйти</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: ADMIN ══ -->
+<div class="page" id="page-admin">
+  <div class="section" style="max-width:1000px">
+    <div class="section-tag">Только для администратора</div>
+    <h2>Панель управления</h2>
+
+    <div class="admin-tabs">
+      <div class="admin-tab active" onclick="switchAdminTab('chapters')">Главы</div>
+      <div class="admin-tab" onclick="switchAdminTab('books')">Произведения</div>
+      <div class="admin-tab" onclick="switchAdminTab('blog')">Блог</div>
+      <div class="admin-tab" onclick="switchAdminTab('texts')">Тексты</div>
+      <div class="admin-tab" onclick="switchAdminTab('comments')">Комментарии</div>
+      <div class="admin-tab" onclick="switchAdminTab('users')">Пользователи</div>
+    </div>
+
+    <!-- CHAPTERS -->
+    <div class="admin-pane active" id="admin-pane-chapters">
+      <div class="section-tag">Добавить / редактировать главу</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+        <div class="form-group">
+          <label>Произведение</label>
+          <select id="admin-chapter-book">
+            <option value="">— выберите —</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Название главы</label><input type="text" id="admin-chapter-title" placeholder="Глава 1"></div>
+        <div class="form-group"><label>Дата (напр. 01 апреля 2026)</label><input type="text" id="admin-chapter-date" placeholder="01 апреля 2026"></div>
+        <div class="form-group"><label>Порядок (число)</label><input type="number" id="admin-chapter-order" placeholder="1" min="0"></div>
+      </div>
+      <div class="form-group"><label>Текст главы (необязательно, если манхва — добавляй страницы ниже)</label><textarea id="admin-chapter-text" style="min-height:120px" placeholder="Текст..."></textarea></div>
+
+      <!-- PDF IMPORT -->
+      <div style="background:var(--card-bg);border:1px solid var(--divider);padding:20px;margin-bottom:20px">
+        <div class="section-tag">Импорт из PDF</div>
+        <p style="font-size:0.88rem;color:var(--muted);margin-bottom:14px">Загрузи PDF-файл с текстом главы. Текст будет извлечён и добавлен в поле выше.</p>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <label class="btn-plain" style="cursor:pointer">
+            📄 Выбрать .pdf файл
+            <input type="file" id="pdf-import-input" accept=".pdf" style="display:none" onchange="previewPdfImport(event)">
+          </label>
+          <span id="pdf-filename" style="font-size:0.85rem;color:var(--muted)"></span>
+        </div>
+        <div id="pdf-preview-wrap" style="display:none;margin-top:14px">
+          <div style="font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Извлечённый текст (первые 500 символов):</div>
+          <div id="pdf-text-preview" style="max-height:200px;overflow-y:auto;border:1px solid var(--divider);padding:12px;background:var(--form-bg);font-size:0.88rem;color:var(--muted)"></div>
+          <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+            <button class="btn-plain filled" onclick="importPdfText()">✓ Вставить текст в поле</button>
+            <button class="btn-plain" onclick="cancelPdfImport()">Отмена</button>
+          </div>
+          <div id="pdf-import-msg" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <!-- MANHWA PAGES (images stored as base64 in DB) -->
+      <div style="background:var(--card-bg);border:1px solid var(--divider);padding:20px;margin-bottom:20px">
+        <div class="section-tag">Страницы манхвы (изображения)</div>
+        <p style="font-size:0.88rem;color:var(--muted);margin-bottom:14px">Загрузи изображения страниц манхвы. Они сохраняются в базу данных как base64 — без Storage!</p>
+        <label class="btn-plain" style="cursor:pointer;display:inline-block">
+          🖼 Добавить страницы
+          <input type="file" id="manhwa-pages-input" multiple accept="image/*" style="display:none" onchange="previewManhwaPages(event)">
+        </label>
+        <div id="manhwa-pages-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px"></div>
+        <div id="manhwa-pages-status" style="font-size:0.82rem;color:var(--muted);margin-top:8px"></div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-plain filled" onclick="adminSaveChapter()">Сохранить главу</button>
+        <button class="btn-plain" onclick="adminCancelChapterEdit()" id="btn-cancel-ch-edit" style="display:none">Отмена</button>
+        <span id="editing-ch-label" style="font-size:0.82rem;color:var(--muted)"></span>
+      </div>
+      <div id="admin-chapters-msg" style="margin-top:12px"></div>
+
+      <div style="margin-top:36px">
+        <div class="section-tag">Опубликованные главы</div>
+        <div id="admin-chapters-list"></div>
+      </div>
+    </div>
+
+    <!-- BOOKS -->
+    <div class="admin-pane" id="admin-pane-books">
+      <div class="section-tag">Добавить произведение</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+        <div class="form-group"><label>Тип (МАНХВА / МАНГА / ВЕБ-ТУН)</label><input type="text" id="admin-book-badge" placeholder="МАНХВА"></div>
+        <div class="form-group"><label>Название</label><input type="text" id="admin-book-title" placeholder="Название"></div>
+        <div class="form-group"><label>Автор</label><input type="text" id="admin-book-author" placeholder="Автор"></div>
+        <div class="form-group"><label>Жанры (одной строкой)</label><input type="text" id="admin-book-genre" placeholder="Романтика · Экшн"></div>
+        <div class="form-group"><label>Метаданные</label><input type="text" id="admin-book-meta" placeholder="50 гл. · Онгоинг"></div>
+        <div class="form-group"><label>Теги (через запятую)</label><input type="text" id="admin-book-tags" placeholder="Романтика, Фэнтези"></div>
+      </div>
+      <div class="form-group"><label>Описание</label><textarea id="admin-book-desc" style="min-height:100px" placeholder="Синопсис..."></textarea></div>
+
+      <!-- COVER UPLOAD -->
+      <div style="background:var(--card-bg);border:1px solid var(--divider);padding:20px;margin-bottom:16px">
+        <div class="section-tag">Обложка</div>
+        <p style="font-size:0.88rem;color:var(--muted);margin-bottom:12px">Загрузи файл обложки — сохранится как base64 в базу данных (без Storage).<br>Рекомендуемый размер: 300×450px. Максимум ~500KB.</p>
+        <label class="btn-plain" style="cursor:pointer;display:inline-block">
+          🖼 Загрузить обложку
+          <input type="file" id="admin-book-cover-file" accept="image/*" style="display:none" onchange="previewBookCover(event)">
+        </label>
+        <div class="cover-preview-wrap" id="cover-preview-wrap" style="display:none;margin-top:10px">
+          <img id="cover-preview-img" class="cover-preview-img" src="" alt="Обложка">
+          <button class="btn-sm danger" onclick="clearBookCover()">✕ Удалить</button>
+        </div>
+        <div style="margin-top:10px">
+          <label style="font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px">или URL обложки</label>
+          <input type="text" id="admin-book-cover-url" placeholder="https://... (необязательно)" style="width:100%;background:var(--form-bg);border:1px solid var(--divider);padding:8px 12px;font-family:'EB Garamond',serif;font-size:0.95rem;color:var(--ink);outline:none">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-plain filled" onclick="adminSaveBook()">Сохранить произведение</button>
+        <button class="btn-plain" onclick="adminCancelBookEdit()" id="btn-cancel-book-edit" style="display:none">Отмена</button>
+        <span id="editing-book-label" style="font-size:0.82rem;color:var(--muted)"></span>
+      </div>
+      <div id="admin-books-msg" style="margin-top:12px"></div>
+      <div style="margin-top:32px"><div class="section-tag">Список</div><ul class="books-admin-list" id="admin-books-list" style="list-style:none"></ul></div>
+    </div>
+
+    <!-- BLOG -->
+    <div class="admin-pane" id="admin-pane-blog">
+      <div class="section-tag">Добавить / редактировать запись</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+        <div class="form-group"><label>Число</label><input type="text" id="admin-blog-day" placeholder="01"></div>
+        <div class="form-group"><label>Месяц год</label><input type="text" id="admin-blog-month" placeholder="Апр 2026"></div>
+      </div>
+      <div class="form-group"><label>Заголовок</label><input type="text" id="admin-blog-title" placeholder="Заголовок записи"></div>
+      <div class="form-group"><label>Текст</label><textarea id="admin-blog-text" style="min-height:160px" placeholder="Текст записи..."></textarea></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-plain filled" onclick="adminSaveBlogPost()">Сохранить</button>
+        <button class="btn-plain" onclick="adminCancelBlogEdit()" id="btn-cancel-blog-edit" style="display:none">Отмена</button>
+        <span id="editing-blog-label" style="font-size:0.82rem;color:var(--muted)"></span>
+      </div>
+      <div id="admin-blog-msg" style="margin-top:12px"></div>
+      <div style="margin-top:32px"><div class="section-tag">Записи</div><div id="admin-blog-list"></div></div>
+    </div>
+
+    <!-- TEXTS -->
+    <div class="admin-pane" id="admin-pane-texts">
+      <div class="section-tag">Тексты главной страницы</div>
+      <div class="form-group"><label>Цитата</label><input type="text" id="admin-home-quote"></div>
+      <div class="form-group"><label>Абзац на главной</label><textarea id="admin-home-desc" style="min-height:90px"></textarea></div>
+      <div class="section-tag" style="margin-top:24px">О проекте</div>
+      <div class="form-group"><label>Первый абзац</label><textarea id="admin-about-p1" style="min-height:100px"></textarea></div>
+      <div class="form-group"><label>Второй абзац</label><textarea id="admin-about-p2" style="min-height:100px"></textarea></div>
+      <button class="btn-plain filled" onclick="adminSaveTexts()" style="margin-top:8px">Сохранить тексты</button>
+      <div id="admin-texts-msg" style="margin-top:12px"></div>
+    </div>
+
+    <!-- COMMENTS -->
+    <div class="admin-pane" id="admin-pane-comments">
+      <div class="section-tag">Все комментарии</div>
+      <div id="admin-comments-list"></div>
+    </div>
+
+    <!-- USERS -->
+    <div class="admin-pane" id="admin-pane-users">
+      <div class="section-tag">Зарегистрированные пользователи <span id="admin-users-count" style="color:var(--muted);font-size:0.85rem"></span></div>
+      <div id="admin-users-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BOOK MODAL ══ -->
+<div class="modal-overlay" id="book-modal" onclick="if(event.target===this)closeBookModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeBookModal()">✕</button>
+    <div id="book-modal-content"></div>
+  </div>
+</div>
+
+<!-- ══ AUTH MODAL ══ -->
+<div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="modal-box" style="max-width:440px">
+    <button class="modal-close" onclick="closeAuthModal()">✕</button>
+    <div id="login-form">
+      <div class="section-tag">Вход</div>
+      <h2 style="font-size:1.6rem;margin-bottom:18px">С возвращением</h2>
+      <div id="login-msg"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="your@email.com"></div>
+      <div class="form-group"><label>Пароль</label><input type="password" id="login-password" placeholder="••••••••"></div>
+      <div class="remember-row"><input type="checkbox" id="login-remember" checked><label for="login-remember">Запомнить меня</label></div>
+      <button class="btn-plain filled" onclick="doLogin()" style="width:100%">Войти</button>
+      <div id="forgot-msg" style="margin-top:10px"></div>
+      <div class="switch-link">Забыли пароль? <a onclick="doForgotPassword()">Сбросить</a></div>
+      <div class="switch-link">Нет аккаунта? <a onclick="switchAuthTo('register')">Зарегистрироваться</a></div>
+    </div>
+    <div id="register-form" style="display:none">
+      <div class="section-tag">Регистрация</div>
+      <h2 style="font-size:1.6rem;margin-bottom:18px">Создать аккаунт</h2>
+      <div id="register-msg"></div>
+      <div class="form-group"><label>Никнейм</label><input type="text" id="reg-nickname" placeholder="Ваш никнейм"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="your@email.com"></div>
+      <div class="form-group"><label>Пароль (мин. 6 символов)</label><input type="password" id="reg-password" placeholder="••••••••"></div>
+      <button class="btn-plain filled" onclick="doRegister()" style="width:100%">Создать аккаунт</button>
+      <div class="switch-link">Есть аккаунт? <a onclick="switchAuthTo('login')">Войти</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TEXT EDIT MODAL ══ -->
+<div class="modal-overlay" id="text-edit-modal" onclick="if(event.target===this)closeTextEditModal()">
+  <div class="modal-box wide">
+    <button class="modal-close" onclick="closeTextEditModal()">✕</button>
+    <div id="text-edit-content"></div>
+  </div>
+</div>
+
+<!-- ══ RESET PASSWORD MODAL ══ -->
+<div class="modal-overlay" id="reset-password-modal">
+  <div class="modal-box" style="max-width:440px">
+    <div class="section-tag">Сброс пароля</div>
+    <h2 style="font-size:1.6rem;margin-bottom:18px">Новый пароль</h2>
+    <div id="reset-msg"></div>
+    <div class="form-group"><label>Новый пароль (мин. 6 символов)</label><input type="password" id="reset-new-password" placeholder="••••••••"></div>
+    <button class="btn-plain filled" onclick="doResetPassword()" style="width:100%">Сохранить пароль</button>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<!-- PDF.js for PDF import -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script>
+// ═══ КОНФИГ FIREBASE ════════════════════════════
+const ADMIN_UID = 'bJBT7Z3ZXPe6WvOfD1CHSzlzAMu2'; // ← вставь свой UID
+firebase.initializeApp({
+  apiKey:"AIzaSyCrTxC9fH8fTveNUD3seO00hnC2GB6x-Fs",
+  authDomain:"site-f9596.firebaseapp.com",
+  databaseURL:"https://site-f9596-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"site-f9596",
+  storageBucket:"site-f9596.firebasestorage.app",
+  messagingSenderId:"332162115765",
+  appId:"1:332162115765:web:9041e6f255d17391ac36fc"
+});
+const db=firebase.database(), auth=firebase.auth();
+
+// PDF.js worker
+if(typeof pdfjsLib!=='undefined') pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ═══ СОСТОЯНИЕ ═══════════════════════════════════
+const _cache={};
+let currentUser=null, currentBookId=null, currentChapIdx=0;
+let editingChapterId=null, editingBookId=null, editingBlogId=null;
+let _siteUnsub=null;
+const _navStack=[];
+let _currentTheme='violet';
+let _appReady=false;
+
+// Данные для форм
+let _pendingCoverData=null;      // base64 обложки
+let _pendingManhwaPages=[];      // [{name,data}] base64 страниц
+let _pdfExtractedText='';        // извлечённый текст из PDF
+
+// ═══ НАСТРОЙКИ РИДЕРА ═══════════════════════════
+let RS={ fontSize:18, lineHeight:2.0, fontFamily:'serif' };
+try{ const s=JSON.parse(localStorage.getItem('rs-hb')||'{}'); Object.assign(RS,s); }catch(e){}
+
+// ═══ УТИЛИТЫ ══════════════════════════════════════
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showMsg(el,txt,type){if(!el)return;el.innerHTML='<div class="msg '+type+'">'+txt+'</div>';setTimeout(()=>{if(el)el.innerHTML=''},4000);}
+function getData(k,d){return(k in _cache)?_cache[k]:d;}
+function getChapters(bookId){
+  const chapters=getData('chapters',{});
+  const raw=chapters[bookId]!==undefined?chapters[bookId]:chapters[String(bookId)];
+  if(!raw)return[];
+  const arr=Array.isArray(raw)?raw:Object.values(raw);
+  return arr.filter(Boolean).sort((a,b)=>(a.order||0)-(b.order||0));
+}
+
+// ═══ FIREBASE WRITE ════════════════════════════════
+function setData(k,v){
+  _cache[k]=v;
+  const siteKeys=['books','chapters','blog_posts','home_quote','home_desc','about_p1','about_p2'];
+  if(siteKeys.includes(k)) db.ref('site/'+k).set(v).catch(e=>console.warn('FB write ['+k+']:',e.message));
+  if(k.startsWith('saved_')&&currentUser){
+    const toWrite=Array.isArray(v)?Object.fromEntries(v.map((item,i)=>['saved_'+i,item])):v;
+    db.ref('users/'+currentUser.uid+'/saved').set(toWrite).catch(e=>console.warn('saved:',e.message));
+  }
+}
+
+// ═══ ТЕМЫ ═════════════════════════════════════════
+const THEMES=[
+  {id:'violet', label:'Фиолет (дефолт)', dot:'#0d0b12', icon:'💜'},
+  {id:'light',  label:'Светлая',         dot:'#fdf6ff', icon:'☀'},
+  {id:'sepia',  label:'Сепия',           dot:'#f5ead6', icon:'📜'},
+  {id:'night',  label:'Ночная синяя',    dot:'#0f1520', icon:'✦'},
+];
+function applyTheme(id){
+  THEMES.forEach(t=>document.body.classList.remove(t.id));
+  document.body.classList.add(id);
+  _currentTheme=id;
+  localStorage.setItem('theme-hb',id);
+}
+function toggleTheme(ddId){
+  const el=document.getElementById(ddId||'theme-dropdown');
+  if(el) el.classList.toggle('open');
+}
+function setTheme(id){
+  applyTheme(id);
+  document.querySelectorAll('.theme-dropdown').forEach(el=>el.classList.remove('open'));
+  renderNav();
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('.theme-toggle')||e.target.closest('.theme-dropdown'))return;
+  document.querySelectorAll('.theme-dropdown').forEach(el=>el.classList.remove('open'));
+});
+
+// ═══ БУРГЕР ════════════════════════════════════════
+function toggleBurger(){
+  document.getElementById('burger-btn').classList.toggle('open');
+  document.getElementById('nav-main-links').classList.toggle('open');
+}
+function closeBurger(){
+  const b=document.getElementById('burger-btn'),l=document.getElementById('nav-main-links');
+  if(b)b.classList.remove('open'); if(l)l.classList.remove('open');
+}
+
+// ═══ FIREBASE LOAD ═════════════════════════════════
+let _firstLoad=true;
+function loadSiteData(){
+  if(_siteUnsub){db.ref('site').off('value',_siteUnsub);_siteUnsub=null;}
+  setTimeout(()=>{if(_firstLoad){_firstLoad=false;hideLoading();}},1500);
+  _siteUnsub=db.ref('site').on('value',snap=>{
+    if(_firstLoad){_firstLoad=false;hideLoading();}
+    if(!snap.exists())return;
+    const val=snap.val();
+    ['books','chapters','blog_posts','home_quote','home_desc','about_p1','about_p2'].forEach(k=>{
+      if(k in val)_cache[k]=val[k];
+    });
+    renderWorksGrid();renderBlogPosts();applyTexts();renderSaved();
+    if(document.getElementById('page-admin').classList.contains('active')){
+      renderAdminChapters();renderAdminBooks();renderAdminBlogList();renderAdminComments();
+    }
+    if(document.getElementById('page-book').classList.contains('active')&&currentBookId!==null) renderChaptersList(currentBookId);
+    populateBookSelect();
+  },err=>{console.error('FB /site:',err.message);if(_firstLoad){_firstLoad=false;}hideLoading();});
+  db.ref('comments').on('value',snap=>{
+    const val=snap.exists()?snap.val():{};
+    const normalized={};
+    Object.entries(val).forEach(([k,v])=>{
+      normalized[k]=v?(Array.isArray(v)?v:Object.values(v)).filter(Boolean):[];
+    });
+    _cache['comments']=normalized;
+    if(document.getElementById('page-chapter').classList.contains('active')&&currentBookId!==null){
+      const ch=getChapters(currentBookId)[currentChapIdx];
+      if(ch)renderComments(currentBookId,ch.id);
+    }
+  },err=>console.error('FB /comments:',err.message));
+}
+
+function hideLoading(){
+  const el=document.getElementById('loading-screen');
+  if(!el||el._hiding)return;
+  el._hiding=true; el.style.opacity='0'; el.style.transition='opacity 0.5s ease';
+  setTimeout(()=>{if(el.parentNode)el.parentNode.removeChild(el);},550);
+}
+
+// ═══ AUTH ════════════════════════════════════════════
+function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-password').value;
+  const remember=document.getElementById('login-remember').checked;
+  const msg=document.getElementById('login-msg');
+  if(!email||!pass){showMsg(msg,'Заполните все поля.','error');return;}
+  auth.setPersistence(remember?firebase.auth.Auth.Persistence.LOCAL:firebase.auth.Auth.Persistence.SESSION)
+    .then(()=>auth.signInWithEmailAndPassword(email,pass))
+    .catch(e=>showMsg(msg,(e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found')?'Неверный email или пароль.':'Ошибка: '+e.message,'error'));
+}
+function doForgotPassword(){
+  const email=document.getElementById('login-email').value.trim();
+  const msg=document.getElementById('forgot-msg');
+  if(!email){msg.innerHTML='<span style="color:var(--red);font-size:0.88rem">Введите email выше.</span>';return;}
+  auth.sendPasswordResetEmail(email)
+    .then(()=>{msg.innerHTML='<span style="color:var(--success);font-size:0.88rem">Письмо отправлено!</span>';})
+    .catch(e=>{msg.innerHTML='<span style="color:var(--red);font-size:0.88rem">Ошибка: '+e.message+'</span>';});
+}
+function doRegister(){
+  const nick=document.getElementById('reg-nickname').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const pass=document.getElementById('reg-password').value;
+  const msg=document.getElementById('register-msg');
+  if(!nick||!email||!pass){showMsg(msg,'Заполните все поля.','error');return;}
+  if(pass.length<6){showMsg(msg,'Пароль — минимум 6 символов.','error');return;}
+  auth.createUserWithEmailAndPassword(email,pass)
+    .then(cred=>db.ref('users/'+cred.user.uid).set({nickname:nick,email,role:'user',avatar:null,banned:false}))
+    .catch(e=>showMsg(msg,e.code==='auth/email-already-in-use'?'Email уже зарегистрирован.':'Ошибка: '+e.message,'error'));
+}
+function logout(){
+  auth.signOut().then(()=>{currentUser=null;renderNav();showAdminBars(false);renderSaved();const fbtn=document.getElementById('forum-new-btn');if(fbtn)fbtn.style.display='none';showPage('main');showSection('home');});
+}
+auth.onAuthStateChanged(fbUser=>{
+  if(fbUser){
+    function tryLoad(attempt){
+      db.ref('users/'+fbUser.uid).once('value',snap=>{
+        const p=snap.val();
+        if(!p&&attempt<4){setTimeout(()=>tryLoad(attempt+1),500);return;}
+        if(p&&p.banned){auth.signOut();alert('Ваш аккаунт заблокирован.');return;}
+        currentUser={uid:fbUser.uid,email:fbUser.email,nickname:p?p.nickname:fbUser.email,role:fbUser.uid===ADMIN_UID?'admin':(p?p.role:'user'),avatar:p?p.avatar:null};
+        if(p&&p.saved){const savedRaw=p.saved;_cache['saved_'+currentUser.uid]=Array.isArray(savedRaw)?savedRaw:Object.values(savedRaw).filter(Boolean);}
+        if(p&&p.readProgress)_cache['rp']=p.readProgress;
+        closeAuthModal();renderNav();showAdminBars(currentUser.role==='admin');
+        renderWorksGrid();renderBlogPosts();renderSaved();
+        const fbtn=document.getElementById('forum-new-btn');if(fbtn)fbtn.style.display='';
+      });
+    }
+    tryLoad(0);
+  } else {
+    currentUser=null;renderNav();showAdminBars(false);renderWorksGrid();renderBlogPosts();renderSaved();
+    const fbtn=document.getElementById('forum-new-btn');if(fbtn)fbtn.style.display='none';
+  }
+});
+
+// ═══ ПРОГРЕСС ЧТЕНИЯ ══════════════════════════════
+function getRP(){return _cache['rp']||{};}
+function markRead(bookId,chapIdx){
+  if(!currentUser)return;
+  const rp=getRP();
+  if(!rp[bookId]||rp[bookId]<chapIdx+1)rp[bookId]=chapIdx+1;
+  _cache['rp']=rp;
+  db.ref('users/'+currentUser.uid+'/readProgress').set(rp).catch(()=>{});
+}
+function bookProgress(bookId){
+  const total=getChapters(bookId).length;
+  const done=getRP()[bookId]||0;
+  return{done,total,pct:total?Math.round(done/total*100):0};
+}
+
+// ═══ «НОВАЯ» БЕЙДЖ ═══════════════════════════════
+function isNew(ch){
+  if(!ch||!ch.date)return false;
+  const mo={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};
+  const p=ch.date.trim().split(' ');
+  if(p.length<3)return false;
+  const d=new Date(+p[2],mo[p[1]],+p[0]);
+  return!isNaN(d)&&(Date.now()-d)<7*24*3600*1000;
+}
+
+// ═══ ТЕКСТЫ САЙТА ══════════════════════════════════
+function applyTexts(){
+  const s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  s('home-quote',getData('home_quote','«Хорошая манхва — это когда жалко листать быстро»'));
+  s('home-desc',getData('home_desc','Здесь публикуются любительские переводы корейских манхв.'));
+  s('about-p1',getData('about_p1','Привет! Я — автор проекта HornyBible.'));
+  s('about-p2',getData('about_p2','Все переводы бесплатны.'));
+}
+
+// ═══ AUTH MODAL ════════════════════════════════════
+function openAuthModal(tab){switchAuthTo(tab);document.getElementById('auth-modal').classList.add('active');}
+function closeAuthModal(){document.getElementById('auth-modal').classList.remove('active');}
+function switchAuthTo(tab){
+  document.getElementById('login-form').style.display=tab==='login'?'':'none';
+  document.getElementById('register-form').style.display=tab==='register'?'':'none';
+}
+
+// ═══ BOOK MODAL ════════════════════════════════════
+function openBookModal(id){
+  const b=getData('books',[]).find(x=>x.id===id);if(!b)return;
+  const saved=isSavedBook(id);
+  const isAdmin=currentUser&&currentUser.role==='admin';
+  const prog=bookProgress(id);
+  const progHtml=prog.total&&currentUser?
+    '<div style="margin:12px 0 16px"><div class="prog-bar"><div class="prog-fill" style="width:'+prog.pct+'%"></div></div><div class="prog-label">'+prog.done+' / '+prog.total+' глав ('+prog.pct+'%)</div></div>':'';
+  const coverHtml=b.cover?'<img src="'+esc(b.cover)+'" style="max-width:100%;max-height:260px;object-fit:cover;margin-bottom:14px;border:1px solid var(--divider)">':'';
+  document.getElementById('book-modal-content').innerHTML=
+    coverHtml+
+    '<div class="modal-badge">'+esc(b.badge)+'</div>'+
+    '<div class="modal-title">'+esc(b.title)+'</div>'+
+    '<div class="modal-author">'+esc(b.author)+'</div>'+
+    '<div class="modal-meta">'+esc(b.meta||'')+'</div>'+
+    '<div class="modal-tags">'+(b.tags||[]).map(t=>'<span class="modal-tag">'+esc(t)+'</span>').join('')+'</div>'+
+    '<div class="modal-desc">'+esc(b.desc||'')+'</div>'+
+    progHtml+
+    '<div class="modal-actions">'+
+      '<button class="btn-plain filled" onclick="openBookDetail('+b.id+');closeBookModal()">Читать главы</button>'+
+      '<button class="btn-plain" onclick="toggleSave('+b.id+');closeBookModal()">'+(saved?'✕ Убрать':'+ Сохранить')+'</button>'+
+      (isAdmin?'<button class="btn-plain" onclick="adminEditBookForm('+b.id+');closeBookModal()">✎ Ред.</button>':'')+
+    '</div>';
+  document.getElementById('book-modal').classList.add('active');
+}
+function closeBookModal(){document.getElementById('book-modal').classList.remove('active');}
+
+// ═══ BOOK DETAIL ═══════════════════════════════════
+function openBookDetail(bookId){
+  currentBookId=bookId;
+  const b=getData('books',[]).find(x=>x.id===bookId);if(!b)return;
+  const isAdmin=currentUser&&currentUser.role==='admin';
+  document.getElementById('book-detail-header').innerHTML=
+    '<button class="btn-plain" onclick="goBack()" style="margin-bottom:16px">← Назад</button>'+
+    '<div class="section-tag">Произведение</div><h2>'+esc(b.title)+'</h2>'+
+    '<p style="color:var(--muted);font-style:italic">'+esc(b.author)+'</p>'+
+    (isAdmin?'<button class="btn-plain" style="margin-top:10px" onclick="showPage(\'admin\');initAdminPage();switchAdminTab(\'chapters\')">+ Добавить главу</button>':'');
+  renderChaptersList(bookId);
+  _navStack.push({type:'main'});
+  try{history.pushState({page:'book',bookId},'');}catch(_){}
+  showPageRaw('book');
+}
+function renderChaptersList(bookId){
+  const chs=getChapters(bookId);
+  const isAdmin=currentUser&&currentUser.role==='admin';
+  const readCount=getRP()[bookId]||0;
+  const list=document.getElementById('chapters-list');
+  if(!chs.length){list.innerHTML='<li style="color:var(--muted);padding:20px 0">Глав пока нет.</li>';return;}
+  list.innerHTML=chs.map((ch,idx)=>
+    '<li>'+
+      '<span class="chapter-link" onclick="openChapter('+bookId+','+idx+')" style="'+(idx<readCount?'color:var(--muted)':'')+'">'+
+        esc(ch.title)+
+        (isNew(ch)?'<span class="badge-new">Новая</span>':'')+
+        (idx<readCount?' <span style="color:var(--gold);font-size:0.75rem">✓</span>':'')+
+      '</span>'+
+      '<span class="chapter-date">'+(ch.date||'')+'</span>'+
+      (isAdmin?'<button class="btn-sm" onclick="adminEditChapterFromReader('+bookId+','+idx+')">✎</button><button class="btn-sm danger" onclick="adminDeleteChapter('+bookId+',\''+ch.id+'\')">✕</button>':'')+
+    '</li>').join('');
+}
+
+// ═══ READER SETTINGS ═══════════════════════════════
+function applyRS(){
+  const c=document.getElementById('chapter-content');if(!c)return;
+  c.style.fontSize=RS.fontSize+'px'; c.style.lineHeight=RS.lineHeight;
+  c.style.fontFamily=RS.fontFamily==='sans'?'Arial,Helvetica,sans-serif':'EB Garamond,Georgia,serif';
+  c.querySelectorAll('p').forEach(p=>{p.style.fontSize=RS.fontSize+'px';p.style.lineHeight=RS.lineHeight;});
+  localStorage.setItem('rs-hb',JSON.stringify(RS));
+  document.querySelectorAll('[data-rs-lh]').forEach(b=>b.classList.toggle('on',parseFloat(b.getAttribute('data-rs-lh'))===RS.lineHeight));
+  document.querySelectorAll('[data-rs-ff]').forEach(b=>b.classList.toggle('on',b.getAttribute('data-rs-ff')===RS.fontFamily));
+  const fv=document.getElementById('rs-fv');if(fv)fv.textContent=RS.fontSize+'px';
+}
+function rsSize(d){RS.fontSize=Math.min(36,Math.max(14,RS.fontSize+d));applyRS();}
+function rsLH(v){RS.lineHeight=v;applyRS();}
+function rsFF(v){RS.fontFamily=v;applyRS();}
+
+// ═══ CHAPTER READER ════════════════════════════════
+function openChapter(bookId,chapIdx){
+  currentBookId=bookId;currentChapIdx=chapIdx;
+  const b=getData('books',[]).find(x=>x.id===bookId);
+  const chs=getChapters(bookId);
+  const ch=chs[chapIdx];if(!ch)return;
+  const isAdmin=currentUser&&currentUser.role==='admin';
+  markRead(bookId,chapIdx);
+
+  document.getElementById('chapter-header').innerHTML=
+    '<button class="btn-plain" onclick="goBack()" style="margin-bottom:16px">← К списку глав</button>'+
+    '<div class="section-tag">'+esc(b?b.title:'')+'</div>'+
+    '<h2>'+esc(ch.title)+'</h2>'+
+    '<p style="font-size:0.82rem;color:var(--muted)">'+(ch.date||'')+'</p>'+
+    (isAdmin?'<button class="btn-plain" style="margin-top:8px" onclick="adminEditChapterFromReader('+bookId+','+chapIdx+')">✎ Редактировать</button>':'')+
+    '<div class="reader-toolbar">'+
+      '<span class="rtb-label">Шрифт</span>'+
+      '<div class="rtb-group">'+
+        '<button class="rtb-btn" onclick="rsSize(-1)">A−</button>'+
+        '<span class="rtb-val" id="rs-fv">'+RS.fontSize+'px</span>'+
+        '<button class="rtb-btn" onclick="rsSize(+1)">A+</button>'+
+      '</div>'+
+      '<div class="rtb-group">'+
+        '<button class="rtb-btn" data-rs-ff="serif" onclick="rsFF(\'serif\')">С засечками</button>'+
+        '<button class="rtb-btn" data-rs-ff="sans" onclick="rsFF(\'sans\')">Без засечек</button>'+
+      '</div>'+
+      '<span class="rtb-label">Интервал</span>'+
+      '<div class="rtb-group">'+
+        '<button class="rtb-btn" data-rs-lh="1.6" onclick="rsLH(1.6)">Сжатый</button>'+
+        '<button class="rtb-btn" data-rs-lh="2.0" onclick="rsLH(2.0)">Обычный</button>'+
+        '<button class="rtb-btn" data-rs-lh="2.5" onclick="rsLH(2.5)">Широкий</button>'+
+      '</div>'+
+    '</div>';
+
+  // Если есть страницы манхвы — показываем их как изображения
+  const contentEl=document.getElementById('chapter-content');
+  if(ch.manhwaPages&&ch.manhwaPages.length){
+    contentEl.innerHTML='<div class="manhwa-reader">'+
+      ch.manhwaPages.map(pg=>'<img class="manhwa-page-img" src="'+esc(pg.data)+'" alt="'+esc(pg.name||'')+'">').join('')+
+    '</div>';
+    contentEl.style.fontSize=''; contentEl.style.lineHeight='';
+  } else {
+    // Текст
+    const chapterHtml=ch.text?(ch.text.split('\n\n').map(p=>{const t=p.trim();return t?'<p>'+esc(t).replace(/\n/g,'<br>')+'</p>':'';}).filter(Boolean).join('')):'<p style="color:var(--muted)">Текст главы не добавлен.</p>';
+    contentEl.innerHTML=chapterHtml;
+    applyRS();
+  }
+
+  const nav=document.getElementById('chapter-nav');
+  nav.innerHTML=
+    (chapIdx>0?'<button class="btn-plain" onclick="openChapter('+bookId+','+(chapIdx-1)+')">← Предыдущая</button>':'<span></span>')+
+    (chapIdx<chs.length-1?'<button class="btn-plain filled" onclick="openChapter('+bookId+','+(chapIdx+1)+')">Следующая →</button>':'');
+
+  renderComments(bookId,ch.id);
+  const chPage=document.getElementById('page-chapter');
+  if(!chPage||!chPage.classList.contains('active')) _navStack.push({type:'book',bookId});
+  try{history.pushState({page:'chapter',bookId,chapIdx},'');}catch(_){}
+  showPageRaw('chapter');
+}
+
+// ═══ НАВИГАЦИЯ ═════════════════════════════════════
+function showPageRaw(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  window.scrollTo(0,0);closeBurger();
+  if(_appReady&&name!=='chapter'&&name!=='book'&&name!=='forum-thread') try{history.pushState({page:name,idx:_navStack.length},'');}catch(_){}
+}
+function showPage(name){
+  _navStack.length=0;showPageRaw(name);
+  try{history.pushState({page:name,idx:0},'');}catch(_){}
+}
+function goBack(){
+  const prev=_navStack.pop();
+  if(!prev){showPage('main');return;}
+  if(prev.type==='saved'){unsubForumPosts();showPageRaw('main');showSection('forum');return;}
+  if(prev.type==='main'){showPageRaw('main');}
+  else if(prev.type==='book'){
+    const bookId=prev.bookId||currentBookId;
+    const b=getData('books',[]).find(x=>x.id===bookId);if(!b)return showPageRaw('main');
+    const isAdmin=currentUser&&currentUser.role==='admin';
+    document.getElementById('book-detail-header').innerHTML=
+      '<button class="btn-plain" onclick="goBack()" style="margin-bottom:16px">← Назад</button>'+
+      '<div class="section-tag">Произведение</div><h2>'+esc(b.title)+'</h2>'+
+      '<p style="color:var(--muted);font-style:italic">'+esc(b.author)+'</p>'+
+      (isAdmin?'<button class="btn-plain" style="margin-top:10px" onclick="showPage(\'admin\');initAdminPage();switchAdminTab(\'chapters\')">+ Добавить главу</button>':'');
+    renderChaptersList(bookId);showPageRaw('book');
+  } else {showPageRaw('main');}
+}
+function showSection(sec){
+  _navStack.length=0;showPageRaw('main');
+  document.querySelectorAll('#nav-main-links a').forEach(a=>a.classList.remove('active'));
+  const el=document.getElementById('nav-'+sec);if(el)el.classList.add('active');
+  const target=document.getElementById('sec-'+sec);
+  if(target)setTimeout(()=>{try{target.scrollIntoView({behavior:'smooth'});}catch(_){target.scrollIntoView();}},50);
+  if(sec==='forum')renderForumThreads();
+}
+function showAdminBars(yes){
+  ['home','blog','about'].forEach(k=>{const el=document.getElementById(k+'-admin-bar');if(el)el.style.display=yes?'':'none';});
+}
+
+// ═══ NAV RENDER ════════════════════════════════════
+function renderNav(){
+  const area=document.getElementById('nav-auth-area');
+  const mob=document.getElementById('nav-auth-mobile');
+  const cur=THEMES.find(t=>t.id===_currentTheme)||THEMES[0];
+  const ddOptions=THEMES.map(t=>'<button class="theme-option'+(t.id===_currentTheme?' active':'')+'" onclick="setTheme(\''+t.id+'\')"><span class="theme-dot" style="background:'+t.dot+'"></span>'+t.label+'</button>').join('');
+  const tb='<div style="position:relative"><button class="theme-toggle" onclick="toggleTheme(\'theme-dropdown\')">'+cur.icon+' Тема</button><div class="theme-dropdown" id="theme-dropdown">'+ddOptions+'</div></div>';
+  const tbm='<div style="position:relative"><button class="theme-toggle" onclick="toggleTheme(\'theme-dropdown-mob\')">'+cur.icon+' Тема</button><div class="theme-dropdown" id="theme-dropdown-mob">'+ddOptions+'</div></div>';
+  let h='',hm='';
+  if(!currentUser){
+    h=tb+'<button class="btn-auth" onclick="openAuthModal(\'login\')">Войти</button><button class="btn-auth primary" onclick="openAuthModal(\'register\')">Регистрация</button>';
+    hm=tbm+'<button class="btn-auth" onclick="openAuthModal(\'login\');closeBurger()">Войти</button><button class="btn-auth primary" onclick="openAuthModal(\'register\');closeBurger()">Рег.</button>';
+  } else {
+    const av=currentUser.avatar?'<img src="'+currentUser.avatar+'">':(currentUser.nickname||currentUser.email)[0].toUpperCase();
+    const adm=currentUser.role==='admin'?'<button class="btn-auth gold-btn" onclick="showPage(\'admin\');initAdminPage()">Админ</button>':'';
+    const chip='<div class="user-chip" onclick="showPage(\'profile\');renderProfile();closeBurger()"><div class="user-avatar">'+av+'</div><span class="user-chip-name">'+esc(currentUser.nickname||currentUser.email)+'</span></div>';
+    h=tb+adm+chip;hm=tbm+adm+chip;
+  }
+  area.innerHTML=h;if(mob)mob.innerHTML=hm;
+}
+
+// ═══ WORKS GRID (MANHWA CARDS) ═════════════════════
+function renderWorksGrid(){
+  const books=getData('books',[]);
+  const isAdmin=currentUser&&currentUser.role==='admin';
+  const grid=document.getElementById('works-grid');if(!grid)return;
+  const cards=books.map(b=>{
+    const prog=bookProgress(b.id);
+    const hasNew=getChapters(b.id).some(isNew);
+    const coverHtml=b.cover
+      ?'<img class="work-cover" src="'+esc(b.cover)+'" alt="'+esc(b.title)+'">'
+      :'<div class="work-cover-placeholder">HB</div>';
+    return '<div class="work-card" onclick="openBookModal('+b.id+')">'+
+      (isAdmin?'<button class="card-edit-btn" onclick="event.stopPropagation();adminEditBookForm('+b.id+')">✎</button>':'')+
+      coverHtml+
+      '<div class="work-info">'+
+        '<div class="work-badge">'+esc(b.badge)+(hasNew?'<span class="badge-new">Новая</span>':'')+'</div>'+
+        '<div class="work-genre">'+esc(b.genre||'')+'</div>'+
+        '<div class="work-title">'+esc(b.title)+'</div>'+
+        '<div class="work-author">'+esc(b.author)+'</div>'+
+        (prog.total&&currentUser?'<div class="prog-bar"><div class="prog-fill" style="width:'+prog.pct+'%"></div></div><div class="prog-label">'+prog.done+'/'+prog.total+' гл.</div>':'')+
+      '</div></div>';
+  });
+  cards.push('<div class="work-card" style="display:flex;align-items:center;justify-content:center;border-style:dashed;opacity:0.4;cursor:default;min-height:280px"><div style="text-align:center"><div style="font-size:2.5rem;color:var(--red);margin-bottom:8px">♦</div><div style="font-size:0.82rem;color:var(--muted)">Скоро новая манхва</div></div></div>');
+  grid.innerHTML=cards.join('');
+}
+
+// ═══ BLOG ══════════════════════════════════════════
+function renderBlogPosts(){
+  const posts=getData('blog_posts',[]);
+  if(!posts.length){const list=document.getElementById('blog-posts-list');if(list)list.innerHTML='<p style="color:var(--muted)">Записей пока нет.</p>';return;}
+  const isAdmin=currentUser&&currentUser.role==='admin';
+  const list=document.getElementById('blog-posts-list');if(!list)return;
+  list.innerHTML=posts.map(p=>
+    '<div class="blog-post">'+
+    '<div class="blog-date"><div class="day">'+esc(p.day||'')+'</div><div class="month">'+esc(p.month||'')+'</div></div>'+
+    '<div><div class="blog-title">'+esc(p.title)+'</div><p class="blog-excerpt">'+esc(p.text)+'</p></div>'+
+    (isAdmin?'<div class="blog-post-actions"><button class="btn-sm" onclick="adminEditBlogForm(\''+p.id+'\')">✎</button><button class="btn-sm danger" onclick="adminDeleteBlog(\''+p.id+'\')">✕</button></div>':'')+
+    '</div>').join('');
+}
+
+// ═══ COMMENTS ══════════════════════════════════════
+let _replyTo=null;
+function renderComments(bookId,chapId){
+  const key=bookId+'_'+chapId;
+  const isAdmin=currentUser&&currentUser.role==='admin';
+  const wrap=document.getElementById('chapter-comments');
+  const raw=getData('comments',{})[key];
+  let coms=[];
+  if(raw){
+    if(Array.isArray(raw)) coms=raw.filter(Boolean).map(c=>c.id?c:{...c,id:'c'+Math.random()});
+    else coms=Object.entries(raw).filter(([,c])=>c).map(([fbKey,c])=>({...c,id:c.id||fbKey}));
+  }
+  coms.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+  let html='<div class="section-tag" style="margin-bottom:16px">Комментарии</div>';
+  html+=coms.length?coms.map(c=>{
+    const isComAdmin=(c.uid===ADMIN_UID||c.isAdmin===true);
+    const replyHtml=c.replyTo?'<div class="comment-reply-quote"><div class="rq-author">↩ '+esc(c.replyTo.nickname)+'</div><div>'+esc(c.replyTo.text.slice(0,80))+(c.replyTo.text.length>80?'…':'')+'</div></div>':'';
+    const canDel=isAdmin||(currentUser&&currentUser.uid===c.uid);
+    const replyBtn=currentUser?'<button class="comment-reply-btn" onclick="startReply(\''+key+'\',\''+c.id+'\',\''+encodeURIComponent(c.nickname)+'\',\''+encodeURIComponent(c.text.slice(0,80))+'\')">↩ Ответить</button>':'';
+    return '<div class="comment" id="com-'+c.id+'">'+
+      '<div class="comment-avatar">'+(c.avatar?'<img src="'+esc(c.avatar)+'">':esc((c.nickname||'?')[0]))+'</div>'+
+      '<div class="comment-body"><div class="comment-meta">'+
+        '<span class="comment-author'+(isComAdmin?' comment-author-admin':'')+'">'+esc(c.nickname||'Аноним')+'</span>'+
+        (isComAdmin?'<span class="comment-admin-badge">Админ</span>':'')+
+        '<span class="comment-time">'+(c.date||'')+'</span>'+
+        (canDel?'<button class="comment-del" onclick="deleteComment(\''+key+'\',\''+c.id+'\')">✕</button>':'')+
+      '</div>'+replyHtml+'<div class="comment-text">'+esc(c.text)+'</div>'+replyBtn+'</div></div>';
+  }).join(''):'<p style="color:var(--muted);margin-bottom:20px">Комментариев пока нет.</p>';
+  if(currentUser){
+    html+='<div style="margin-top:20px" id="comment-form-wrap">'+
+      '<div id="reply-indicator" style="display:none" class="reply-form">'+
+        '<span style="font-size:0.85rem;color:var(--muted)">Ответ на: <strong id="reply-to-name"></strong></span>'+
+        '<button class="reply-cancel" onclick="cancelReply()">✕ Отмена</button>'+
+      '</div>'+
+      '<div class="form-group"><label>Комментарий</label><textarea id="comment-input" style="min-height:80px" placeholder="Напишите что-нибудь..."></textarea></div>'+
+      '<button class="btn-plain filled" onclick="postComment(\''+key+'\')">Отправить</button></div>';
+  } else {
+    html+='<div class="locked-notice">Чтобы комментировать, <a onclick="openAuthModal(\'login\')" style="color:var(--red);cursor:pointer;text-decoration:underline">войдите</a> или <a onclick="openAuthModal(\'register\')" style="color:var(--red);cursor:pointer;text-decoration:underline">зарегистрируйтесь</a>.</div>';
+  }
+  wrap.innerHTML=html;
+}
+function startReply(key,comId,encNick,encText){
+  _replyTo={id:comId,nickname:decodeURIComponent(encNick),text:decodeURIComponent(encText)};
+  const ind=document.getElementById('reply-indicator'),nm=document.getElementById('reply-to-name');
+  if(ind)ind.style.display=''; if(nm)nm.textContent=_replyTo.nickname;
+  const ci=document.getElementById('comment-input');if(ci)ci.focus();
+  const cfw=document.getElementById('comment-form-wrap');if(cfw)try{cfw.scrollIntoView({behavior:'smooth'});}catch(_){}
+}
+function cancelReply(){_replyTo=null;const ind=document.getElementById('reply-indicator');if(ind)ind.style.display='none';}
+function postComment(key){
+  const inp=document.getElementById('comment-input');
+  const text=(inp?inp.value:'').trim();
+  if(!text||!currentUser)return;
+  if(inp)inp.value='';
+  const isComAdmin=currentUser.uid===ADMIN_UID;
+  const newC={uid:currentUser.uid,nickname:currentUser.nickname||currentUser.email,avatar:currentUser.avatar||null,isAdmin:isComAdmin,replyTo:_replyTo||null,source:key,text,createdAt:Date.now(),date:new Date().toLocaleDateString('ru-RU',{day:'2-digit',month:'long',year:'numeric'})};
+  cancelReply();
+  db.ref('comments/'+key).push(newC).catch(e=>console.warn('postComment:',e.message));
+  const all=getData('comments',{});if(!all[key])all[key]=[];
+  const optimistic={...newC,id:'c'+Date.now()};
+  const updated=[...(Array.isArray(all[key])?all[key]:Object.values(all[key]).filter(Boolean)),optimistic];
+  _cache['comments']={...all,[key]:updated};
+  const[bid,chid]=key.split('_');renderComments(parseInt(bid),chid);
+}
+function deleteComment(key,cid){
+  const all=getData('comments',{});if(!all[key])return;
+  const raw=all[key];
+  if(!Array.isArray(raw)){
+    const entry=Object.entries(raw).find(([,c])=>c&&c.id===cid);
+    if(entry){db.ref('comments/'+key+'/'+entry[0]).remove().catch(()=>{});}
+    const updated={...raw};if(entry)delete updated[entry[0]];
+    _cache['comments']={...all,[key]:updated};
+  } else {
+    all[key]=raw.filter(c=>c.id!==cid);_cache['comments']=all;
+    db.ref('comments/'+key).set(all[key]).catch(()=>{});
+  }
+  const[bid,chid]=key.split('_');renderComments(parseInt(bid),chid);
+}
+
+// ═══ СОХРАНЁННОЕ ════════════════════════════════════
+function isSavedBook(id){return currentUser&&getData('saved_'+currentUser.uid,[]).some(x=>x.id===id);}
+function toggleSave(id){
+  if(!currentUser){openAuthModal('login');return;}
+  const key='saved_'+currentUser.uid;
+  let saved=getData(key,[]);
+  if(saved.some(x=>x.id===id)) saved=saved.filter(x=>x.id!==id);
+  else{const b=getData('books',[]).find(x=>x.id===id);if(b)saved.push({id:b.id,title:b.title,author:b.author,badge:b.badge,cover:b.cover||null});}
+  setData(key,saved);renderSaved();
+}
+function renderSaved(){
+  const cont=document.getElementById('saved-content');
+  if(!currentUser){cont.innerHTML='<div class="locked-notice"><a onclick="openAuthModal(\'login\')" style="color:var(--red);cursor:pointer;text-decoration:underline">Войдите</a> или <a onclick="openAuthModal(\'register\')" style="color:var(--red);cursor:pointer;text-decoration:underline">зарегистрируйтесь</a>, чтобы сохранять произведения.</div>';return;}
+  const saved=getData('saved_'+currentUser.uid,[]);
+  if(!saved.length){cont.innerHTML='<p style="color:var(--muted)">Вы ещё ничего не сохранили.</p>';return;}
+  cont.innerHTML='<div class="saved-grid">'+saved.map(b=>{
+    const prog=bookProgress(b.id);
+    const coverHtml=b.cover?'<img src="'+esc(b.cover)+'" style="width:100%;aspect-ratio:2/3;object-fit:cover;display:block;margin-bottom:10px;border:1px solid var(--divider)">':'';
+    return '<div class="saved-card">'+
+      '<button class="saved-remove" onclick="toggleSave('+b.id+')" title="Убрать">✕</button>'+
+      coverHtml+
+      '<div class="work-badge" style="margin-bottom:8px">'+esc(b.badge||'')+'</div>'+
+      '<div class="work-title" style="margin-bottom:4px">'+esc(b.title)+'</div>'+
+      '<div class="work-author" style="margin-bottom:6px">'+esc(b.author||'')+'</div>'+
+      (prog.total?'<div class="prog-bar" style="margin-bottom:4px"><div class="prog-fill" style="width:'+prog.pct+'%"></div></div><div class="prog-label" style="margin-bottom:8px">'+prog.done+'/'+prog.total+' гл.</div>':'')+
+      '<button class="btn-plain" onclick="openBookDetail('+b.id+')">Читать →</button></div>';
+  }).join('')+'</div>';
+}
+
+// ═══ TEXT EDIT MODAL ═══════════════════════════════
+function openEditText(type){
+  const cont=document.getElementById('text-edit-content');
+  if(type==='home'){
+    cont.innerHTML='<div class="section-tag">Редактировать главную</div>'+
+      '<div class="form-group"><label>Цитата</label><input type="text" id="te-home-quote" value="'+esc(getData('home_quote',''))+'"></div>'+
+      '<div class="form-group"><label>Описание</label><textarea id="te-home-desc" style="min-height:90px">'+esc(getData('home_desc',''))+'</textarea></div>'+
+      '<button class="btn-plain filled" onclick="saveEditText(\'home\')">Сохранить</button>';
+  } else {
+    cont.innerHTML='<div class="section-tag">Редактировать О проекте</div>'+
+      '<div class="form-group"><label>Абзац 1</label><textarea id="te-about-p1" style="min-height:100px">'+esc(getData('about_p1',''))+'</textarea></div>'+
+      '<div class="form-group"><label>Абзац 2</label><textarea id="te-about-p2" style="min-height:100px">'+esc(getData('about_p2',''))+'</textarea></div>'+
+      '<button class="btn-plain filled" onclick="saveEditText(\'about\')">Сохранить</button>';
+  }
+  document.getElementById('text-edit-modal').classList.add('active');
+}
+function saveEditText(type){
+  if(type==='home'){setData('home_quote',document.getElementById('te-home-quote').value);setData('home_desc',document.getElementById('te-home-desc').value);}
+  else{setData('about_p1',document.getElementById('te-about-p1').value);setData('about_p2',document.getElementById('te-about-p2').value);}
+  applyTexts();closeTextEditModal();
+}
+function closeTextEditModal(){document.getElementById('text-edit-modal').classList.remove('active');}
+function openAddBlogPost(){showPage('admin');initAdminPage();switchAdminTab('blog');}
+
+// ═══ PROFILE ════════════════════════════════════════
+function renderProfile(){
+  if(!currentUser){showPage('main');return;}
+  document.getElementById('profile-email').value=currentUser.email;
+  document.getElementById('profile-nickname').value=currentUser.nickname||'';
+  document.getElementById('profile-password').value='';
+  const big=document.getElementById('profile-avatar-big');
+  big.innerHTML=currentUser.avatar?'<img src="'+currentUser.avatar+'">':(currentUser.nickname||currentUser.email)[0].toUpperCase();
+}
+function saveProfile(){
+  const nick=document.getElementById('profile-nickname').value.trim();
+  const pass=document.getElementById('profile-password').value;
+  const msg=document.getElementById('profile-msg');
+  if(!nick){showMsg(msg,'Никнейм не может быть пустым.','error');return;}
+  currentUser.nickname=nick;
+  const save=()=>db.ref('users/'+currentUser.uid).update({nickname:nick}).then(()=>{renderNav();showMsg(msg,'Сохранено!','success');}).catch(e=>showMsg(msg,'Ошибка: '+e.message,'error'));
+  if(pass){if(pass.length<6){showMsg(msg,'Минимум 6 символов.','error');return;}auth.currentUser.updatePassword(pass).then(save).catch(e=>showMsg(msg,e.code==='auth/requires-recent-login'?'Выйдите и войдите снова для смены пароля.':'Ошибка: '+e.message,'error'));}
+  else save();
+}
+function handleAvatarUpload(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{currentUser.avatar=ev.target.result;db.ref('users/'+currentUser.uid).update({avatar:currentUser.avatar}).then(()=>{renderProfile();renderNav();});};
+  r.readAsDataURL(f);
+}
+
+// ═══ PDF IMPORT ═════════════════════════════════════
+let _pdfFullText='';
+async function previewPdfImport(e){
+  const file=e.target.files[0];if(!file)return;
+  document.getElementById('pdf-filename').textContent=file.name;
+  document.getElementById('pdf-import-input').value='';
+  const msg=document.getElementById('pdf-import-msg');
+  if(typeof pdfjsLib==='undefined'){
+    showMsg(msg,'PDF.js не загрузился. Проверьте интернет.','error');return;
+  }
+  try {
+    const arrayBuffer=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+    let fullText='';
+    for(let i=1;i<=pdf.numPages;i++){
+      const page=await pdf.getPage(i);
+      const tc=await page.getTextContent();
+      fullText+=tc.items.map(item=>item.str).join(' ')+'\n\n';
+    }
+    _pdfFullText=fullText.trim();
+    document.getElementById('pdf-text-preview').textContent=_pdfFullText.slice(0,500)+((_pdfFullText.length>500)?'…':'');
+    document.getElementById('pdf-preview-wrap').style.display='';
+  } catch(err){
+    showMsg(msg,'Ошибка чтения PDF: '+err.message,'error');
+  }
+}
+function importPdfText(){
+  const ta=document.getElementById('admin-chapter-text');
+  if(ta&&_pdfFullText){ta.value=_pdfFullText;}
+  cancelPdfImport();
+  showMsg(document.getElementById('pdf-import-msg'),'Текст вставлен!','success');
+}
+function cancelPdfImport(){
+  document.getElementById('pdf-preview-wrap').style.display='none';
+  document.getElementById('pdf-filename').textContent='';
+  _pdfFullText='';
+}
+
+// ═══ MANHWA PAGES UPLOAD (base64 in DB) ══════════════
+function previewManhwaPages(e){
+  const files=Array.from(e.target.files);
+  document.getElementById('manhwa-pages-input').value='';
+  const preview=document.getElementById('manhwa-pages-preview');
+  const status=document.getElementById('manhwa-pages-status');
+  if(!files.length)return;
+  status.textContent='Обработка...';
+  let processed=0;
+  files.forEach((file,i)=>{
+    const r=new FileReader();
+    r.onload=ev=>{
+      _pendingManhwaPages.push({name:file.name,data:ev.target.result,order:_pendingManhwaPages.length});
+      const img=document.createElement('img');
+      img.src=ev.target.result;
+      img.style.cssText='width:60px;height:90px;object-fit:cover;border:1px solid var(--divider)';
+      preview.appendChild(img);
+      processed++;
+      if(processed===files.length) status.textContent=_pendingManhwaPages.length+' стр. загружено';
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+// ═══ COVER UPLOAD (base64 in DB) ═════════════════════
+function previewBookCover(e){
+  const file=e.target.files[0];if(!file)return;
+  if(file.size>600*1024){alert('Файл слишком большой. Рекомендуется до 500KB.');return;}
+  const r=new FileReader();
+  r.onload=ev=>{
+    _pendingCoverData=ev.target.result;
+    document.getElementById('cover-preview-img').src=_pendingCoverData;
+    document.getElementById('cover-preview-wrap').style.display='';
+    document.getElementById('admin-book-cover-url').value='';
+  };
+  r.readAsDataURL(file);
+  document.getElementById('admin-book-cover-file').value='';
+}
+function clearBookCover(){
+  _pendingCoverData=null;
+  document.getElementById('cover-preview-wrap').style.display='none';
+  document.getElementById('cover-preview-img').src='';
+  document.getElementById('admin-book-cover-url').value='';
+}
+
+// ═══ ADMIN PANEL ════════════════════════════════════
+function initAdminPage(){
+  populateBookSelect();renderAdminChapters();renderAdminBooks();renderAdminBlogList();loadAdminTexts();renderAdminComments();renderAdminUsers();
+}
+function switchAdminTab(tab){
+  document.querySelectorAll('.admin-tab').forEach((t,i)=>{
+    const tabs=['chapters','books','blog','texts','comments','users'];
+    t.classList.toggle('active',tabs[i]===tab);
+  });
+  document.querySelectorAll('.admin-pane').forEach(p=>p.classList.remove('active'));
+  const pane=document.getElementById('admin-pane-'+tab);if(pane)pane.classList.add('active');
+  if(tab==='comments')renderAdminComments();
+  if(tab==='users')renderAdminUsers();
+}
+
+function populateBookSelect(){
+  const sel=document.getElementById('admin-chapter-book');if(!sel)return;
+  const books=getData('books',[]);
+  const curVal=sel.value;
+  sel.innerHTML='<option value="">— выберите —</option>'+books.map(b=>'<option value="'+b.id+'">'+esc(b.title)+'</option>').join('');
+  if(curVal)sel.value=curVal;
+}
+
+// — Главы
+function adminSaveChapter(){
+  const bookId=parseInt(document.getElementById('admin-chapter-book').value);
+  const title=document.getElementById('admin-chapter-title').value.trim();
+  const date=document.getElementById('admin-chapter-date').value.trim();
+  const order=parseInt(document.getElementById('admin-chapter-order').value)||0;
+  const text=document.getElementById('admin-chapter-text').value.trim();
+  const msg=document.getElementById('admin-chapters-msg');
+  if(!bookId||!title){showMsg(msg,'Выберите произведение и введите название.','error');return;}
+
+  const chapters=getData('chapters',{});
+  if(!chapters[bookId])chapters[bookId]=[];
+  const arr=Array.isArray(chapters[bookId])?[...chapters[bookId]]:Object.values(chapters[bookId]).filter(Boolean);
+
+  const manhwaPages=[..._pendingManhwaPages]; // страницы манхвы
+
+  if(editingChapterId){
+    const idx=arr.findIndex(c=>c.id===editingChapterId);
+    if(idx!==-1){
+      arr[idx]={...arr[idx],title,date,order,text};
+      if(manhwaPages.length) arr[idx].manhwaPages=manhwaPages;
+    }
+    showMsg(msg,'Глава обновлена!','success');
+  } else {
+    const newCh={id:'ch'+Date.now(),title,date,order,text,manhwaPages:manhwaPages.length?manhwaPages:[]};
+    arr.push(newCh);
+    showMsg(msg,'Глава добавлена!','success');
+  }
+  chapters[bookId]=arr;
+  setData('chapters',chapters);
+  adminCancelChapterEdit();renderAdminChapters();renderChaptersList(bookId);
+}
+function adminCancelChapterEdit(){
+  editingChapterId=null;
+  ['admin-chapter-title','admin-chapter-date','admin-chapter-text'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const ord=document.getElementById('admin-chapter-order');if(ord)ord.value='';
+  document.getElementById('btn-cancel-ch-edit').style.display='none';
+  document.getElementById('editing-ch-label').textContent='';
+  _pendingManhwaPages=[];
+  const prev=document.getElementById('manhwa-pages-preview');if(prev)prev.innerHTML='';
+  const stat=document.getElementById('manhwa-pages-status');if(stat)stat.textContent='';
+  cancelPdfImport();
+}
+function adminEditChapterFromReader(bookId,chapIdx){
+  const ch=getChapters(bookId)[chapIdx];if(!ch)return;
+  showPage('admin');initAdminPage();switchAdminTab('chapters');
+  const sel=document.getElementById('admin-chapter-book');if(sel)sel.value=bookId;
+  document.getElementById('admin-chapter-title').value=ch.title||'';
+  document.getElementById('admin-chapter-date').value=ch.date||'';
+  document.getElementById('admin-chapter-order').value=ch.order||0;
+  document.getElementById('admin-chapter-text').value=ch.text||'';
+  editingChapterId=ch.id;
+  document.getElementById('btn-cancel-ch-edit').style.display='';
+  document.getElementById('editing-ch-label').textContent='Редактирование: «'+ch.title+'»';
+  window.scrollTo(0,0);
+  // Показать существующие страницы
+  if(ch.manhwaPages&&ch.manhwaPages.length){
+    _pendingManhwaPages=ch.manhwaPages.map(p=>({...p}));
+    const prev=document.getElementById('manhwa-pages-preview');
+    prev.innerHTML=ch.manhwaPages.map(pg=>'<img src="'+esc(pg.data)+'" style="width:60px;height:90px;object-fit:cover;border:1px solid var(--divider)">').join('');
+    const stat=document.getElementById('manhwa-pages-status');if(stat)stat.textContent=ch.manhwaPages.length+' стр. уже загружено';
+  }
+}
+function adminDeleteChapter(bookId,chapId){
+  if(!confirm('Удалить главу?'))return;
+  const chapters=getData('chapters',{});
+  const arr=Array.isArray(chapters[bookId])?[...chapters[bookId]]:Object.values(chapters[bookId]||{}).filter(Boolean);
+  chapters[bookId]=arr.filter(c=>c.id!==chapId);
+  setData('chapters',chapters);renderAdminChapters();renderChaptersList(bookId);
+}
+function renderAdminChapters(){
+  const books=getData('books',[]);
+  const chapters=getData('chapters',{});
+  let html='';
+  books.forEach(b=>{
+    const chs=getChapters(b.id);
+    if(!chs.length)return;
+    html+='<div style="margin-bottom:20px"><div style="font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px">'+esc(b.title)+'</div>'+
+      chs.map(ch=>'<div class="ch-row">'+
+        '<span class="ch-row-title">'+esc(ch.title)+'</span>'+
+        (ch.manhwaPages&&ch.manhwaPages.length?'<span style="font-size:0.7rem;color:var(--red);padding:2px 6px;border:1px solid var(--red)">🖼 '+ch.manhwaPages.length+' стр.</span>':'')+
+        '<button class="btn-sm" onclick="adminEditChapterFromReader('+b.id+','+getChapters(b.id).indexOf(ch)+')">✎</button>'+
+        '<button class="btn-sm danger" onclick="adminDeleteChapter('+b.id+',\''+ch.id+'\')">✕</button></div>').join('')+
+    '</div>';
+  });
+  document.getElementById('admin-chapters-list').innerHTML=html||'<p style="color:var(--muted)">Глав нет.</p>';
+}
+
+// — Произведения
+function adminSaveBook(){
+  const badge=document.getElementById('admin-book-badge').value.trim();
+  const title=document.getElementById('admin-book-title').value.trim();
+  const author=document.getElementById('admin-book-author').value.trim();
+  const genre=document.getElementById('admin-book-genre').value.trim();
+  const meta=document.getElementById('admin-book-meta').value.trim();
+  const tagsRaw=document.getElementById('admin-book-tags').value.trim();
+  const desc=document.getElementById('admin-book-desc').value.trim();
+  const coverUrl=document.getElementById('admin-book-cover-url').value.trim();
+  const msg=document.getElementById('admin-books-msg');
+  if(!title){showMsg(msg,'Введите название.','error');return;}
+  const tags=tagsRaw?tagsRaw.split(',').map(t=>t.trim()).filter(Boolean):[];
+  const cover=_pendingCoverData||coverUrl||null;
+  const books=getData('books',[]);
+  if(editingBookId!==null){
+    const idx=books.findIndex(b=>b.id===editingBookId);
+    if(idx!==-1) books[idx]={...books[idx],badge,title,author,genre,meta,tags,desc,cover};
+    showMsg(msg,'Обновлено!','success');
+  } else {
+    const newId=books.length?Math.max(...books.map(b=>b.id||0))+1:1;
+    books.push({id:newId,badge,title,author,genre,meta,tags,desc,cover});
+    showMsg(msg,'Добавлено!','success');
+  }
+  setData('books',books);adminCancelBookEdit();renderAdminBooks();renderWorksGrid();populateBookSelect();
+}
+function adminEditBookForm(id){
+  const b=getData('books',[]).find(x=>x.id===id);if(!b)return;
+  document.getElementById('admin-book-badge').value=b.badge||'';
+  document.getElementById('admin-book-title').value=b.title||'';
+  document.getElementById('admin-book-author').value=b.author||'';
+  document.getElementById('admin-book-genre').value=b.genre||'';
+  document.getElementById('admin-book-meta').value=b.meta||'';
+  document.getElementById('admin-book-tags').value=(b.tags||[]).join(', ');
+  document.getElementById('admin-book-desc').value=b.desc||'';
+  document.getElementById('admin-book-cover-url').value='';
+  _pendingCoverData=null;
+  if(b.cover){
+    if(b.cover.startsWith('data:')){_pendingCoverData=b.cover;document.getElementById('cover-preview-img').src=b.cover;document.getElementById('cover-preview-wrap').style.display='';}
+    else{document.getElementById('admin-book-cover-url').value=b.cover;document.getElementById('cover-preview-wrap').style.display='none';}
+  } else {document.getElementById('cover-preview-wrap').style.display='none';}
+  editingBookId=id;
+  document.getElementById('btn-cancel-book-edit').style.display='';
+  document.getElementById('editing-book-label').textContent='Редактирование: «'+b.title+'»';
+  showPage('admin');initAdminPage();switchAdminTab('books');window.scrollTo(0,0);
+}
+function adminCancelBookEdit(){
+  editingBookId=null;_pendingCoverData=null;
+  ['admin-book-badge','admin-book-title','admin-book-author','admin-book-genre','admin-book-meta','admin-book-tags','admin-book-desc','admin-book-cover-url'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('cover-preview-wrap').style.display='none';
+  document.getElementById('btn-cancel-book-edit').style.display='none';
+  document.getElementById('editing-book-label').textContent='';
+}
+function adminDeleteBook(id){
+  if(!confirm('Удалить?'))return;
+  setData('books',getData('books',[]).filter(b=>b.id!==id));
+  renderAdminBooks();renderWorksGrid();
+}
+function renderAdminBooks(){
+  document.getElementById('admin-books-list').innerHTML=getData('books',[]).map(b=>
+    '<li><span style="flex:1">'+esc(b.title)+' <span style="color:var(--muted);font-size:0.8rem">· '+esc(b.author||'')+'</span></span>'+
+    '<div style="display:flex;gap:6px">'+
+    '<button class="btn-sm" onclick="adminEditBookForm('+b.id+')">✎</button>'+
+    '<button class="btn-sm danger" onclick="adminDeleteBook('+b.id+')">✕</button></div></li>').join('');
+}
+
+// — Блог
+function adminSaveBlogPost(){
+  const day=document.getElementById('admin-blog-day').value.trim();
+  const month=document.getElementById('admin-blog-month').value.trim();
+  const title=document.getElementById('admin-blog-title').value.trim();
+  const text=document.getElementById('admin-blog-text').value.trim();
+  const msg=document.getElementById('admin-blog-msg');
+  if(!title||!text){showMsg(msg,'Заполните заголовок и текст.','error');return;}
+  const posts=getData('blog_posts',[]);
+  if(editingBlogId){
+    const i=posts.findIndex(p=>p.id===editingBlogId);
+    if(i!==-1)posts[i]={...posts[i],day,month,title,text};
+    showMsg(msg,'Обновлено!','success');
+  } else {
+    posts.unshift({id:'b'+Date.now(),day,month,title,text});
+    showMsg(msg,'Добавлено!','success');
+  }
+  setData('blog_posts',posts);adminCancelBlogEdit();renderAdminBlogList();renderBlogPosts();
+}
+function adminEditBlogForm(id){
+  const p=getData('blog_posts',[]).find(x=>x.id===id);if(!p)return;
+  document.getElementById('admin-blog-day').value=p.day;
+  document.getElementById('admin-blog-month').value=p.month;
+  document.getElementById('admin-blog-title').value=p.title;
+  document.getElementById('admin-blog-text').value=p.text;
+  editingBlogId=id;
+  document.getElementById('btn-cancel-blog-edit').style.display='';
+  document.getElementById('editing-blog-label').textContent='Редактирование: «'+p.title+'»';
+  showPage('admin');initAdminPage();switchAdminTab('blog');window.scrollTo(0,0);
+}
+function adminCancelBlogEdit(){
+  editingBlogId=null;
+  ['admin-blog-day','admin-blog-month','admin-blog-title','admin-blog-text'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('btn-cancel-blog-edit').style.display='none';
+  document.getElementById('editing-blog-label').textContent='';
+}
+function adminDeleteBlog(id){
+  if(!confirm('Удалить?'))return;
+  setData('blog_posts',getData('blog_posts',[]).filter(p=>p.id!==id));
+  renderAdminBlogList();renderBlogPosts();
+}
+function renderAdminBlogList(){
+  document.getElementById('admin-blog-list').innerHTML=getData('blog_posts',[]).map(p=>
+    '<div class="ch-row"><span class="ch-row-title">'+esc(p.day)+' '+esc(p.month)+' — '+esc(p.title)+'</span>'+
+    '<button class="btn-sm" onclick="adminEditBlogForm(\''+p.id+'\')">✎</button>'+
+    '<button class="btn-sm danger" onclick="adminDeleteBlog(\''+p.id+'\')">✕</button></div>').join('');
+}
+
+// — Тексты
+function loadAdminTexts(){
+  document.getElementById('admin-home-quote').value=getData('home_quote','');
+  document.getElementById('admin-home-desc').value=getData('home_desc','');
+  document.getElementById('admin-about-p1').value=getData('about_p1','');
+  document.getElementById('admin-about-p2').value=getData('about_p2','');
+}
+function adminSaveTexts(){
+  setData('home_quote',document.getElementById('admin-home-quote').value);
+  setData('home_desc',document.getElementById('admin-home-desc').value);
+  setData('about_p1',document.getElementById('admin-about-p1').value);
+  setData('about_p2',document.getElementById('admin-about-p2').value);
+  applyTexts();showMsg(document.getElementById('admin-texts-msg'),'Сохранено!','success');
+}
+
+// — Комментарии
+function renderAdminComments(){
+  db.ref('comments').once('value',snap=>{
+    const all=snap.exists()?snap.val():{};
+    _cache['comments']=all;
+    const list=document.getElementById('admin-comments-list');
+    let html='',total=0,newCount=0;
+    const allComs=[];
+    Object.entries(all).forEach(([key,coms])=>{
+      (Array.isArray(coms)?coms:Object.entries(coms||{}).map(([fbKey,c])=>c?{...c,id:c.id||fbKey}:null)).filter(Boolean).forEach(c=>{allComs.push({...c,_key:key});});
+    });
+    allComs.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    allComs.forEach(c=>{
+      total++;
+      const isNewC=c.uid!==ADMIN_UID&&!c.seenByAdmin;
+      if(isNewC)newCount++;
+      const[bid,chid]=c._key.split('_');
+      const book=getData('books',[]).find(x=>String(x.id)===String(bid));
+      const chap=getChapters(parseInt(bid)).find(x=>x.id===chid);
+      const src=(book?book.title:'Манхва '+bid)+(chap?' · '+chap.title:'');
+      html+='<div class="comment-admin"'+(isNewC?' style="border-color:var(--red)"':'')+'>'+
+        '<div style="flex:1">'+
+        (isNewC?'<div class="notif-source">🔔 Новый</div>':'')+
+        '<div class="notif-source">📖 '+esc(src)+'</div>'+
+        '<div style="font-size:0.88rem;margin:4px 0"><strong>'+esc(c.nickname)+'</strong>'+(c.isAdmin?' <span style="color:var(--gold);font-size:0.75rem">[Админ]</span>':'')+' · '+(c.date||'')+'</div>'+
+        '<div>'+esc(c.text)+'</div></div>'+
+        '<button class="btn-sm danger" onclick="adminDelComment(\''+c._key+'\',\''+c.id+'\')">✕</button></div>';
+    });
+    list.innerHTML=total?html:'<p style="color:var(--muted)">Комментариев нет.</p>';
+    const tabEl=document.querySelectorAll('.admin-tab')[4];
+    if(tabEl)tabEl.innerHTML='Комментарии'+(newCount?' <span class="admin-notif-dot"></span>':'')+' ('+total+')';
+  });
+}
+function adminDelComment(key,cid){
+  const all=_cache['comments']||{};if(!all[key])return;
+  const raw=all[key];
+  if(!Array.isArray(raw)){
+    const entry=Object.entries(raw).find(([,c])=>c&&c.id===cid);
+    if(entry){db.ref('comments/'+key+'/'+entry[0]).remove().catch(()=>{});const updated={...raw};delete updated[entry[0]];_cache['comments']={...all,[key]:updated};}
+  } else {all[key]=raw.filter(c=>c.id!==cid);_cache['comments']=all;db.ref('comments/'+key).set(all[key]).catch(()=>{});}
+  renderAdminComments();
+}
+
+// — Пользователи
+function renderAdminUsers(){
+  db.ref('users').once('value',snap=>{
+    const list=document.getElementById('admin-users-list');
+    const countEl=document.getElementById('admin-users-count');
+    if(!snap.exists()){list.innerHTML='<p style="color:var(--muted)">Нет пользователей.</p>';return;}
+    const entries=Object.entries(snap.val()).filter(([uid])=>uid!==ADMIN_UID);
+    if(countEl)countEl.textContent='— '+entries.length+' чел.';
+    const banned=entries.filter(([,u])=>u.banned).length;
+    let html='<div style="font-size:0.82rem;color:var(--muted);margin-bottom:14px">Активных: '+(entries.length-banned)+' · Заблокированных: '+banned+'</div>';
+    entries.forEach(([uid,u])=>{
+      html+='<div class="ch-row" style="'+(u.banned?'opacity:0.6':'')+'">'+
+        '<div style="flex:1"><div style="font-size:0.95rem">'+esc(u.nickname||'—')+'</div><div style="font-size:0.78rem;color:var(--muted)">'+esc(u.email||uid)+'</div></div>'+
+        '<span style="font-size:0.72rem;padding:2px 8px;border:1px solid '+(u.banned?'var(--red)':'var(--success)')+';color:'+(u.banned?'var(--red)':'var(--success)')+';">'+(u.banned?'Заблокирован':'Активен')+'</span>'+
+        '<button class="btn-sm '+(u.banned?'':'danger')+'" onclick="toggleBan(\''+uid+'\','+!!u.banned+')">'+(u.banned?'Разбанить':'Забанить')+'</button></div>';
+    });
+    list.innerHTML=html;
+  });
+}
+function toggleBan(uid,isBanned){db.ref('users/'+uid).update({banned:!isBanned}).then(()=>renderAdminUsers());}
+
+// ═══ ФОРУМ ══════════════════════════════════════════
+let _currentThreadId=null;
+let _forumAttachFiles={new:[],reply:[]};
+let _forumThreadsRef=null;
+function unsubForumThreads(){if(_forumThreadsRef){_forumThreadsRef.off('value');_forumThreadsRef=null;}}
+
+function renderForumThreads(){
+  const list=document.getElementById('forum-threads-list');
+  const btn=document.getElementById('forum-new-btn');
+  if(!list)return;
+  if(btn)btn.style.display=currentUser?'':'none';
+  unsubForumThreads();
+  _forumThreadsRef=db.ref('forum/threads');
+  _forumThreadsRef.on('value',snap=>{
+    if(!snap.exists()){list.innerHTML='<p style="color:var(--muted)">Тем пока нет. Создайте первую!</p>';return;}
+    const raw=snap.val()||{};
+    const threads=Object.entries(raw).map(([id,val])=>({id,...val}));
+    threads.sort((a,b)=>(b.lastAt||0)-(a.lastAt||0));
+    list.innerHTML='';
+    threads.forEach(t=>{
+      const el=document.createElement('div');
+      el.className='forum-thread';
+      el.onclick=()=>openForumThread(t.id);
+      const avEl=document.createElement('div');avEl.className='forum-thread-avatar';
+      if(t.authorAvatar){const img=document.createElement('img');img.src=t.authorAvatar;avEl.appendChild(img);}
+      else avEl.textContent=(t.authorName||'?')[0];
+      const metaEl=document.createElement('div');metaEl.className='forum-thread-meta';
+      const titleEl=document.createElement('div');titleEl.className='forum-thread-title';titleEl.textContent=t.title||'';
+      const subEl=document.createElement('div');subEl.className='forum-thread-sub';
+      const authSp=document.createElement('span');authSp.textContent=t.authorName||'';
+      const dateSp=document.createElement('span');dateSp.textContent=t.date||'';
+      subEl.appendChild(authSp);subEl.appendChild(dateSp);
+      metaEl.appendChild(titleEl);metaEl.appendChild(subEl);
+      const cntEl=document.createElement('div');cntEl.className='forum-thread-count';cntEl.textContent='💬 '+(t.postCount||1);
+      const headEl=document.createElement('div');headEl.className='forum-thread-head';
+      headEl.appendChild(avEl);headEl.appendChild(metaEl);headEl.appendChild(cntEl);
+      el.appendChild(headEl);list.appendChild(el);
+    });
+  },err=>{list.innerHTML='<p style="color:var(--muted)">Ошибка загрузки форума.</p>';});
+}
+
+function openForumThread(threadId){
+  _currentThreadId=threadId;
+  _navStack.push({type:'saved'});
+  try{history.pushState({page:'forum-thread',threadId},'');}catch(_){}
+  showPageRaw('forum-thread');
+  loadForumThread(threadId);
+}
+
+let _forumPostsRef=null;
+function unsubForumPosts(){if(_forumPostsRef){_forumPostsRef.off('value');_forumPostsRef=null;}}
+function loadForumThread(threadId){
+  unsubForumPosts();
+  const header=document.getElementById('forum-thread-header');
+  const postsEl=document.getElementById('forum-thread-posts');
+  const composeEl=document.getElementById('forum-thread-compose');
+  header.innerHTML='<button class="btn-plain" onclick="goBack()" style="margin-bottom:16px">← К форуму</button><div id="forum-thread-title-display" style="font-family:\'Playfair Display\',serif;font-size:1.4rem;color:var(--ink);margin-bottom:20px"></div>';
+  postsEl.innerHTML='<p style="color:var(--muted)">Загрузка...</p>';
+  db.ref('forum/threads/'+threadId).once('value',snap=>{
+    if(!snap.exists()){postsEl.innerHTML='<p style="color:var(--muted)">Тема не найдена.</p>';return;}
+    const el=document.getElementById('forum-thread-title-display');
+    if(el)el.textContent=snap.val().title||'';
+  });
+  _forumPostsRef=db.ref('forum/posts/'+threadId).orderByChild('createdAt');
+  _forumPostsRef.on('value',snap=>{
+    if(!snap.exists()){postsEl.innerHTML='<p style="color:var(--muted)">Сообщений нет.</p>';renderForumCompose(composeEl,threadId);return;}
+    const isAdmin=currentUser&&currentUser.role==='admin';
+    let html='';
+    snap.forEach(ch=>{
+      const p={id:ch.key,...ch.val()};
+      const av=p.authorAvatar?'<img src="'+esc(p.authorAvatar)+'">':esc((p.authorName||'?')[0]);
+      const mediaHtml=renderForumMedia(p.media||[]);
+      const canDel=isAdmin||(currentUser&&currentUser.uid===p.authorUid);
+      html+='<div class="forum-post" id="fp-'+p.id+'">'+
+        '<div class="forum-post-avatar">'+av+'</div>'+
+        '<div class="forum-post-body">'+
+          '<div class="forum-post-meta">'+
+            '<span class="forum-post-author">'+esc(p.authorName)+'</span>'+
+            (p.isAdmin?'<span class="forum-post-admin-badge">Админ</span>':'')+
+            '<span>'+esc(p.date||'')+'</span>'+
+            (canDel?'<button class="forum-post-del" onclick="deleteForumPost(\''+threadId+'\',\''+p.id+'\')">✕</button>':'')+
+          '</div>'+
+          '<div class="forum-post-text">'+esc(p.text)+'</div>'+
+          mediaHtml+
+        '</div></div>';
+    });
+    postsEl.innerHTML=html;
+    renderForumCompose(composeEl,threadId);
+    postsEl.scrollTop=postsEl.scrollHeight;
+  },err=>console.error('Forum posts:',err.message));
+}
+function renderForumMedia(media){
+  if(!media||!media.length)return'';
+  return'<div class="forum-post-media">'+media.map(m=>{
+    if(m.type==='image')return'<img class="forum-media-img" src="'+esc(m.url)+'" onclick="window.open(this.src)">';
+    return'<a href="'+esc(m.url)+'" target="_blank" style="font-size:0.82rem;color:var(--red)">📎 '+esc(m.name||'Файл')+'</a>';
+  }).join('')+'</div>';
+}
+function renderForumCompose(el,threadId){
+  if(!currentUser){el.innerHTML='<div class="locked-notice">Чтобы ответить, <a onclick="openAuthModal(\'login\')" style="color:var(--red);cursor:pointer;text-decoration:underline">войдите</a>.</div>';return;}
+  el.innerHTML='<div id="forum-thread-compose" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--divider)">'+
+    '<div class="section-tag">Ответить</div>'+
+    '<div class="form-group"><textarea id="forum-reply-inp" style="min-height:80px" placeholder="Напишите ответ..."></textarea></div>'+
+    '<div id="forum-reply-attach-preview" class="forum-attach-preview"></div>'+
+    '<div class="forum-compose-actions">'+
+      '<label class="forum-attach-btn" style="cursor:pointer">📎 Прикрепить'+
+        '<input type="file" id="forum-reply-file-inp" multiple accept="image/*,.pdf" style="display:none" onchange="forumPreviewAttach(\'reply\',event)">'+
+      '</label>'+
+      '<span id="forum-reply-upload-progress" class="forum-upload-progress"></span>'+
+    '</div>'+
+    '<button class="btn-plain filled" onclick="submitForumPost(\''+threadId+'\')" style="margin-top:12px">Отправить</button>'+
+  '</div>';
+}
+
+// Прикрепить файл к форуму
+function forumPreviewAttach(slot,event){
+  const files=Array.from(event.target.files);
+  event.target.value='';
+  if(!_forumAttachFiles[slot])_forumAttachFiles[slot]=[];
+  const previewId=slot==='new'?'forum-new-attach-preview':'forum-reply-attach-preview';
+  const prev=document.getElementById(previewId);
+  files.forEach(f=>{
+    _forumAttachFiles[slot].push(f);
+    if(f.type.startsWith('image/')){
+      const r=new FileReader();
+      r.onload=ev=>{const img=document.createElement('img');img.src=ev.target.result;if(prev)prev.appendChild(img);};
+      r.readAsDataURL(f);
+    } else {
+      const span=document.createElement('div');span.className='fa-item';span.textContent='📎 '+f.name;if(prev)prev.appendChild(span);
+    }
+  });
+}
+const MAX_FILE_MB=5;
+function fileToBase64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(f);});}
+async function uploadForumFiles(slot){
+  const files=_forumAttachFiles[slot]||[];
+  const media=[];
+  const progressEl=document.getElementById(slot==='new'?'forum-new-upload-progress':'forum-reply-upload-progress');
+  for(let i=0;i<files.length;i++){
+    const f=files[i];
+    if(f.size>MAX_FILE_MB*1024*1024){alert('Файл «'+f.name+'» слишком большой. Макс. '+MAX_FILE_MB+' MB.');continue;}
+    if(progressEl)progressEl.textContent='Обработка '+(i+1)+'/'+files.length+'...';
+    const b64=await fileToBase64(f);
+    const type=f.type.startsWith('image/')?'image':'file';
+    media.push({url:b64,type,name:f.name});
+  }
+  if(progressEl)progressEl.textContent='';
+  _forumAttachFiles[slot]=[];
+  return media;
+}
+
+function openNewThreadModal(){if(!currentUser){openAuthModal('login');return;}document.getElementById('forum-thread-modal').classList.add('active');}
+function closeNewThreadModal(){
+  document.getElementById('forum-thread-modal').classList.remove('active');
+  document.getElementById('forum-thread-title-inp').value='';
+  document.getElementById('forum-thread-text-inp').value='';
+  _forumAttachFiles.new=[];
+  const p=document.getElementById('forum-new-attach-preview');if(p)p.innerHTML='';
+  const btn=document.querySelector('#forum-thread-modal .btn-plain.filled');if(btn)btn.disabled=false;
+  const msg=document.getElementById('forum-new-thread-msg');if(msg)msg.innerHTML='';
+}
+async function submitNewThread(){
+  if(!currentUser)return;
+  const title=document.getElementById('forum-thread-title-inp').value.trim();
+  const text=document.getElementById('forum-thread-text-inp').value.trim();
+  const msg=document.getElementById('forum-new-thread-msg');
+  if(!title||!text){showMsg(msg,'Заполните название и текст.','error');return;}
+  const btn=document.querySelector('#forum-thread-modal .btn-plain.filled');
+  if(btn)btn.disabled=true;
+  try{
+    const threadRef=db.ref('forum/threads').push();
+    const threadId=threadRef.key;
+    const media=await uploadForumFiles('new');
+    const now=new Date();
+    const date=now.toLocaleDateString('ru-RU',{day:'2-digit',month:'long',year:'numeric'});
+    const isAdm=currentUser.uid===ADMIN_UID;
+    await threadRef.set({title,authorUid:currentUser.uid,authorName:currentUser.nickname||currentUser.email,authorAvatar:currentUser.avatar||null,isAdmin:isAdm,date,createdAt:Date.now(),lastAt:Date.now(),postCount:1});
+    await db.ref('forum/posts/'+threadId).push({text,media,authorUid:currentUser.uid,authorName:currentUser.nickname||currentUser.email,authorAvatar:currentUser.avatar||null,isAdmin:isAdm,date,createdAt:Date.now()});
+    closeNewThreadModal();renderForumThreads();openForumThread(threadId);
+  }catch(e){showMsg(msg,'Ошибка: '+e.message,'error');}
+  finally{if(btn)btn.disabled=false;}
+}
+async function submitForumPost(threadId){
+  if(!currentUser)return;
+  const inp=document.getElementById('forum-reply-inp');
+  const text=(inp?inp.value:'').trim();
+  if(!text&&!(_forumAttachFiles.reply&&_forumAttachFiles.reply.length))return;
+  const btn=document.querySelector('#forum-thread-compose .btn-plain.filled');
+  if(btn)btn.disabled=true;
+  try{
+    const media=await uploadForumFiles('reply');
+    const date=new Date().toLocaleDateString('ru-RU',{day:'2-digit',month:'long',year:'numeric'});
+    const isAdm=currentUser.uid===ADMIN_UID;
+    await db.ref('forum/posts/'+threadId).push({text,media,authorUid:currentUser.uid,authorName:currentUser.nickname||currentUser.email,authorAvatar:currentUser.avatar||null,isAdmin:isAdm,date,createdAt:Date.now()});
+    const threadSnap=await db.ref('forum/threads/'+threadId).once('value');
+    const _tv=threadSnap.val();const count=(_tv&&_tv.postCount?_tv.postCount:1)+1;
+    await db.ref('forum/threads/'+threadId).update({lastAt:Date.now(),postCount:count});
+    if(inp)inp.value='';
+    const pr=document.getElementById('forum-reply-attach-preview');if(pr)pr.innerHTML='';
+  }catch(e){alert('Ошибка при отправке: '+e.message);}
+  finally{if(btn)btn.disabled=false;}
+}
+function deleteForumPost(threadId,postId){
+  if(!confirm('Удалить сообщение?'))return;
+  db.ref('forum/posts/'+threadId+'/'+postId).remove().catch(e=>console.warn(e));
+}
+
+// ═══ SEED ═══════════════════════════════════════════
+function maybeInitSeed(){
+  db.ref('site/books').once('value',snap=>{
+    if(snap.exists())return;
+    db.ref('site/books').set([
+      {id:1,badge:'МАНХВА',title:'Пример манхвы',author:'Автор',genre:'Романтика · Фэнтези',meta:'20 гл. · Онгоинг',tags:['Романтика','Фэнтези'],desc:'Синопсис вашей первой манхвы. Добавьте её в админ-панели.',cover:null},
+    ]);
+    db.ref('site/blog_posts').set([
+      {id:'b1',day:'01',month:'Апр 2026',title:'Добро пожаловать в HornyBible!',text:'Первая запись. Редактируй текст в панели администратора.'},
+    ]);
+  });
+}
+
+// ═══ СОБЫТИЯ / ИНИЦИАЛИЗАЦИЯ ════════════════════════
+window.addEventListener('error',()=>{const el=document.getElementById('global-err');if(el)el.style.display='';});
+window.addEventListener('unhandledrejection',()=>{const el=document.getElementById('global-err');if(el)el.style.display='';});
+
+// Свайп для читателя
+(function(){
+  let _tx=0,_ty=0;
+  document.addEventListener('touchstart',e=>{if(e.touches.length!==1)return;_tx=e.touches[0].clientX;_ty=e.touches[0].clientY;},{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(e.changedTouches.length!==1)return;
+    const dx=e.changedTouches[0].clientX-_tx;
+    const dy=e.changedTouches[0].clientY-_ty;
+    if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy))return;
+    const chPage=document.getElementById('page-chapter');
+    if(!chPage||!chPage.classList.contains('active'))return;
+    const chs=getChapters(currentBookId);
+    if(dx<0){if(currentChapIdx<chs.length-1)openChapter(currentBookId,currentChapIdx+1);}
+    else{if(currentChapIdx>0)openChapter(currentBookId,currentChapIdx-1);else goBack();}
+  },{passive:true});
+})();
+
+window.addEventListener('popstate',e=>{
+  if(!_appReady)return;
+  e.preventDefault();
+  if(_navStack.length>0)goBack();
+  else showPage('main');
+  try{history.pushState({idx:_navStack.length},'');}catch(_){}
+});
+
+// Telegram BackButton
+(function(){
+  const tg=window.Telegram&&window.Telegram.WebApp;
+  if(!tg)return;
+  tg.ready();
+  function updateTgBack(){if(_navStack.length>0)tg.BackButton.show();else tg.BackButton.hide();}
+  tg.BackButton.onClick(function(){if(_navStack.length>0){goBack();}else{tg.BackButton.hide();}updateTgBack();});
+  const _origGoBack=goBack,_origShowPage=showPage,_origShowPageRaw=showPageRaw;
+  window.showPage=function(n){_origShowPage(n);updateTgBack();};
+  window.goBack=function(){_origGoBack();updateTgBack();};
+  window.showPageRaw=function(n){_origShowPageRaw(n);updateTgBack();};
+})();
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('theme-hb')||'violet';
+  applyTheme(saved);
+
+  window.addEventListener('scroll',()=>{document.getElementById('btn-top').classList.toggle('show',window.scrollY>400);});
+
+  if(window.IntersectionObserver){
+    const obs=new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.1});
+    document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+  } else {
+    document.querySelectorAll('.fade-in').forEach(el=>el.classList.add('visible'));
+  }
+
+  try{history.replaceState({page:'main'},'');}catch(_){}
+  loadSiteData();
+  renderNav();
+  renderForumThreads();
+  _appReady=true;
+
+  db.ref('site/books').once('value',snap=>{if(!snap.exists())maybeInitSeed();});
+  setTimeout(hideLoading,1500);
+  checkAuthAction();
+});
+
+// Сброс пароля
+let _resetOobCode=null;
+function doResetPassword(){
+  const pwd=document.getElementById('reset-new-password').value.trim();
+  const msg=document.getElementById('reset-msg');
+  if(pwd.length<6){msg.innerHTML='<span style="color:var(--red);font-size:0.88rem">Минимум 6 символов.</span>';return;}
+  auth.confirmPasswordReset(_resetOobCode,pwd)
+    .then(()=>{msg.innerHTML='<span style="color:var(--success);font-size:0.88rem">Пароль изменён! Войдите.</span>';setTimeout(()=>{document.getElementById('reset-password-modal').classList.remove('active');openAuthModal('login');},2000);})
+    .catch(e=>{msg.innerHTML='<span style="color:var(--red);font-size:0.88rem">Ошибка: '+e.message+'</span>';});
+}
+function checkAuthAction(){
+  const params=new URLSearchParams(window.location.search);
+  const mode=params.get('mode'),oobCode=params.get('oobCode');
+  if(!mode||!oobCode)return;
+  if(mode==='resetPassword'){
+    auth.verifyPasswordResetCode(oobCode)
+      .then(()=>{_resetOobCode=oobCode;document.getElementById('reset-password-modal').classList.add('active');try{history.replaceState({},'',window.location.pathname);}catch(_){}})
+      .catch(()=>{alert('Ссылка недействительна. Запросите сброс пароля заново.');});
+  }
+}
+</script>
+</body>
+</html>
